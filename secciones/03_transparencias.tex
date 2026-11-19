@@ -1,26 +1,40 @@
 \section{Transparencias de distribución}
 
-% Borrador de Jilmar. Completar los ejemplos cuando se confirme el sistema.
-\begin{frame}{Transparencias de distribución}
-  \begin{block}{Sistema de Cloud Computing}
-    \textit{Pendiente de confirmar con el equipo.}
-  \end{block}
-
+\begin{frame}{Spotify: acceso y ubicación}
   \small
-  \begin{tabular}{@{}lp{0.69\textwidth}@{}}
-    \textbf{Transparencia} & \textbf{Qué se debe verificar} \\
+  \begin{tabular}{@{}lp{0.70\textwidth}@{}}
+    \textbf{Transparencia} & \textbf{Ejemplo y alcance} \\
     \hline
-    Acceso & Si el cliente usa la misma interfaz aunque cambie la forma de acceder al recurso. \\
-    Ubicación & Si el cliente puede usar el recurso sin conocer el servidor que lo aloja. \\
-    Replicación & Si el cliente puede usar el recurso sin elegir entre sus copias. \\
-    Fallos & Qué fallos puede ocultar el sistema y cuáles llegan al cliente. \\
+    Acceso &
+      Al pulsar \emph{Reproducir}, el usuario controla la pista desde la
+      aplicación. Incluso con audio sin pérdida, la app se encarga de
+      cargar y guardar el audio en caché \cite{spotifyLossless2025}. \\[0.7em]
+    Ubicación &
+      Al abrir una canción compartida, el oyente no elige el servidor.
+      Spotify documenta que su perímetro distribuye el tráfico entre
+      regiones de nube \cite{spotifySharing2025,spotifyIncident2025}. \\
   \end{tabular}
 \end{frame}
 
-\begin{frame}{Ejemplos y límites del sistema}
-  \begin{itemize}
-    \item Registrar qué transparencias ofrece el sistema y bajo qué condiciones.
-    \item Añadir un ejemplo concreto y su fuente para cada transparencia.
-    \item Identificar qué detalles debe manejar explícitamente el cliente.
-  \end{itemize}
+\begin{frame}{Spotify: replicación y fallos}
+  \small
+  \begin{tabular}{@{}lp{0.70\textwidth}@{}}
+    \textbf{Transparencia} & \textbf{Ejemplo y alcance} \\
+    \hline
+    Replicación &
+      \emph{Offline Backup} usa copias temporales en el dispositivo de
+      canciones escuchadas recientemente. El usuario selecciona la pista
+      desde la app. La función demuestra el uso de caché local; la
+      replicación entre servidores queda sin confirmar
+      \cite{spotifyOffline2024}. \\[0.7em]
+    Fallos &
+      Sin conexión, \emph{Offline Backup} permite acceder a parte del
+      contenido en caché. En abril de 2025, una caída del perímetro
+      interrumpió gran parte del tráfico pese a los reintentos de la app
+      \cite{spotifyOffline2024,spotifyIncident2025}. \\
+  \end{tabular}
+
+  \medskip
+  {\footnotesize Contexto técnico sobre caché y distribución de medios
+  \cite{viola2023media,van2023caching,nguyen2023edge}.}
 \end{frame}
