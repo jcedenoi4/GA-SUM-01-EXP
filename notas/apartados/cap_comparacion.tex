@@ -1,0 +1,75 @@
+% =====================================================================
+% Notas técnicas: Apartado 4 (CAP y PACELC) y Apartado 7 (Postura crítica)
+% Responsable y expositor: Mendoza Villarroel Elian Jossue
+% Se incluye en notas/notas.tex con \input{notas/apartados/cap_comparacion}
+% Claves del .bib: ahmed2023consistency, lee2023consistency,
+%                  gilbert2012perspectives, lima2023causal
+% Versión inicial: falta el sistema analizado, la comparación y el aporte al PFC.
+% =====================================================================
+
+\subsection*{Notas técnicas: CAP y PACELC}
+
+\paragraph{Teorema CAP.}
+El teorema CAP establece un compromiso fundamental entre tres propiedades de
+los sistemas distribuidos replicados: consistencia, disponibilidad y
+tolerancia a particiones \cite[p.~172]{ahmed2023consistency}. Cuando ocurre
+una interrupción en la comunicación entre sus nodos, no es posible garantizar
+simultáneamente la consistencia y la disponibilidad. Por esta razón, si el
+sistema debe seguir funcionando a pesar de una partición de red, tendrá que
+priorizar una de estas dos propiedades \cite[p.~2]{lee2023consistency}.
+
+\paragraph{Consistencia (C).}
+La consistencia se refiere al acuerdo entre los componentes distribuidos
+sobre el valor del estado compartido \cite[p.~2]{lee2023consistency}, es
+decir, que cada servidor devuelva la respuesta correcta a cada solicitud
+\cite[Sec.~2]{gilbert2012perspectives}. En los sistemas distribuidos
+replicados, la consistencia fuerte garantiza que una lectura siempre refleje
+la escritura más reciente y que todos los nodos almacenen la misma
+información \cite[p.~172]{ahmed2023consistency}. Por eso se considera una
+propiedad de seguridad: nunca debe enviarse al cliente una respuesta
+incorrecta \cite[Sec.~1]{gilbert2012perspectives}.
+
+\paragraph{Disponibilidad (A) y tolerancia a particiones (P).}
+La disponibilidad es la capacidad de responder a las solicitudes de los
+usuarios que leen o modifican el estado compartido
+\cite[p.~2]{lee2023consistency}. La tolerancia a particiones parte de que la
+comunicación entre servidores no es fiable: los mensajes pueden retrasarse o
+perderse y los servidores pueden quedar divididos en grupos que no se
+comunican \cite[Sec.~2]{gilbert2012perspectives}.
+
+\paragraph{Comportamiento durante una partición.}
+Cuando una réplica rechaza una solicitud o no responde dentro del tiempo de
+espera, la base de datos debe decidir entre devolver un resultado
+posiblemente obsoleto, sacrificando la consistencia, o informar que el
+servicio no está disponible. Los sistemas CP, como HBase o BigTable,
+renuncian a la disponibilidad; los sistemas AP, como Cassandra, Dynamo o
+Riak, relajan la consistencia \cite[p.~172]{ahmed2023consistency}.
+
+\paragraph{Teorema PACELC.}
+PACELC extiende CAP al caso en que la red funciona con normalidad. Ante una
+partición, la decisión sigue siendo entre disponibilidad y consistencia; sin
+partición, la decisión pasa a ser entre latencia y consistencia
+\cite[p.~172]{ahmed2023consistency}, \cite[p.~16]{lima2023causal}. Los
+sistemas tienden a ser consistentes todo el tiempo, a costa de la
+disponibilidad bajo partición o de la latencia en operación normal, o al
+revés: sacrifican la consistencia en ambos casos \cite[p.~16]{lima2023causal}.
+
+\subsection*{Postura crítica}
+
+Priorizar consistencia o disponibilidad depende de lo que necesite cada
+aplicación. En un cruce controlado por vehículos autónomos conviene la
+consistencia, porque todos deben compartir la misma información antes de
+avanzar; en cambio, en el sistema de frenado conviene la disponibilidad,
+porque la reacción tiene que ser inmediata
+\cite[pp.~2--3]{lee2023consistency}. De forma similar, en una tienda en
+línea se acepta que el inventario muestre datos con algo de retraso, pero no
+que un pago quede registrado de forma incorrecta
+\cite[Sec.~4.4]{gilbert2012perspectives}. En consecuencia, ningún sistema es
+superior en todos los casos: cada uno equilibra estas propiedades según su
+propósito.
+
+% Pendiente para próximos commits:
+%  - Sistema analizado: qué prioriza con y sin partición, clasificación
+%    PACELC y ejemplo técnico de su documentación oficial.
+%  - Comparación con un segundo sistema real (tabla del apartado 7).
+%  - Aporte al PFC para el apartado 8.
