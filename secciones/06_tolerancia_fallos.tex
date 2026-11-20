@@ -1,31 +1,32 @@
 \section{Tolerancia a fallos}
 
-% Borrador de Melanie. El repositorio aún no identifica el sistema elegido.
-% Completar con evidencia verificable antes de integrar estas diapositivas.
-\begin{frame}{Tolerancia a fallos: análisis del sistema}
-  \begin{block}{Sistema y evidencia por completar}
-    \begin{itemize}
-      \item Sistema, servicio y componente analizado: \textit{pendiente de confirmar}.
-      \item Fallo que soporta y mecanismo de detección: \textit{pendiente de documentar}.
-      \item Recuperación observada y límites: \textit{pendiente de documentar}.
-    \end{itemize}
+% Asistencia de IA (Codex): síntesis del informe técnico y creación del diagrama.
+\begin{frame}{Detección y recuperación de fallos en Spotify}
+  \small
+  \begin{block}{Detección en el perímetro}
+    Envoy recibe y distribuye el tráfico de los usuarios. El 16 de abril de
+    2025, las alarmas detectaron una caída brusca del tráfico a las
+    \textbf{12:20 UTC}, dos minutos después del cambio de configuración
+    \cite{spotifyIncident2025}.
   \end{block}
-  \begin{alertblock}{Criterio de análisis}
-    Distinguir lo que la documentación confirma de lo que se infiere. No atribuir
-    redundancia, replicación, failover ni recuperación al sistema sin evidencia específica.
-  \end{alertblock}
+
+  \begin{block}{Reinicio automático y su límite}
+    Reiniciar una instancia ayuda ante fallos aislados. Ese día, los reinicios
+    simultáneos y los reintentos de los clientes sobrecargaron el perímetro.
+    El máximo de memoria de Envoy superaba el límite de Kubernetes, que volvía
+    a detener las instancias~\cite{spotifyIncident2025}.
+  \end{block}
+
+  \textbf{Impacto (12:20--15:45 UTC):} la caída afectó a la mayoría de los
+  usuarios. Asia-Pacífico mantuvo el servicio porque su menor carga evitó alcanzar
+  el límite de memoria \cite{spotifyIncident2025}.
 \end{frame}
 
-\begin{frame}{Incidente real: causas y recuperación}
-  \begin{enumerate}
-    \item \textbf{Hecho e impacto:} fecha, servicio afectado, duración y usuarios o
-          funciones impactados, con fuente y página o sección.
-    \item \textbf{Detección:} señal o alerta que reveló el problema y cuánto tardó
-          en detectarse, si la fuente lo informa.
-    \item \textbf{Causas:} separar el evento desencadenante de las condiciones
-          técnicas contribuyentes; validar la causa raíz con el método de
-          \texttt{FORM-AC-01}.
-    \item \textbf{Respuesta:} mitigación, recuperación y cambio preventivo
-          documentados; señalar qué dato no está disponible.
-  \end{enumerate}
+\begin{frame}{Caída del 16 de abril de 2025: causas y recuperación}
+  \centering
+  \includegraphics[width=\linewidth]{analisis_causas_raiz.png}
+
+  \vspace{0.35em}
+  {\footnotesize Elaboración a partir del informe de Spotify Engineering
+  \cite{spotifyIncident2025}.}
 \end{frame}
