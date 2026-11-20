@@ -1,0 +1,65 @@
+% =====================================================================
+% Apartado 2: Arquitectura (2 diapositivas, ~2 minutos, incluye SREI)
+% Responsable y expositor: Apunte Pazmiño Washington German
+% Claves del .bib: spotifyIncident2025, khlebnikova2024dataplatform,
+%   gustavsson2023fleet, strid2023fleet, soylemez2022microservices
+% Figura: figuras/arquitectura_spotify.png, exportada desde
+%   diagramas/arquitectura_spotify.drawio. Sin la imagen no compila.
+% SREI se describe como está implementado (cliente-servidor en capas,
+%   un solo backend). No usa la nube.
+% Asistencia de IA (Claude): borrador del texto y del diagrama; revisados
+%   contra las fuentes y ajustados con el boceto del equipo.
+% =====================================================================
+\section{Arquitectura}
+
+\begin{frame}{Cómo está organizado Spotify por dentro}
+  \centering
+  \includegraphics[width=\linewidth,height=0.77\textheight,keepaspectratio]{arquitectura_spotify.png}
+
+  \vspace{0.2em}
+  \raggedright
+  {\scriptsize \textbf{Nube:} el tráfico entra por regiones (Europa,
+  EE.\,UU., Asia-Pacífico) y el perímetro corre en contenedores que
+  maneja Kubernetes \cite{spotifyIncident2025}. Elaboración propia a
+  partir de
+  \cite{spotifyIncident2025,khlebnikova2024dataplatform,gustavsson2023fleet,strid2023fleet}.\par}
+\end{frame}
+
+\begin{frame}{La nube en Spotify frente a nuestro SREI}
+  \begin{itemize}
+    \item \textbf{IaaS:} llevó su plataforma a Google Cloud con
+      \emph{lift and shift} \cite{strid2023fleet}.
+    \item \textbf{PaaS:} sus eventos van a colas Pub/Sub y se procesan en
+      BigQuery o Dataflow \cite{khlebnikova2024dataplatform}.
+  \end{itemize}
+
+  \smallskip
+  \centering
+  \footnotesize
+  % Celdas alineadas a la izquierda: cada una empieza con \raggedright y
+  % cada fila termina con \tabularnewline (no hace falta el paquete array).
+  \begin{tabular}{@{}p{0.16\linewidth}p{0.39\linewidth}p{0.39\linewidth}@{}}
+    \toprule
+    & \textbf{Spotify} & \textbf{SREI (nuestro PFC)} \tabularnewline
+    \midrule
+    Dónde corre   & \raggedright Google Cloud, por regiones
+                    \cite{strid2023fleet,spotifyIncident2025}
+                  & \raggedright Un solo servidor, local y para pruebas \tabularnewline
+    Backend       & \raggedright Miles de componentes en microservicios
+                    \cite{gustavsson2023fleet}
+                  & \raggedright Una API REST en capas (Spring Boot) \tabularnewline
+    Datos         & \raggedright Colas Pub/Sub y BigQuery
+                    \cite{khlebnikova2024dataplatform}
+                  & \raggedright PostgreSQL y carpeta \texttt{/uploads} \tabularnewline
+    Si algo falla & \raggedright En la caída de 2025, Asia-Pacífico siguió
+                    \cite{spotifyIncident2025}
+                  & \raggedright Se cae todo: punto único de fallo \tabularnewline
+    \bottomrule
+  \end{tabular}
+
+  \medskip
+  \raggedright
+  {\scriptsize No se trata de copiar microservicios: adoptarlos no es
+  trivial y sus retos se evalúan según los requisitos del proyecto
+  \cite[p.~1]{soylemez2022microservices}.\par}
+\end{frame}
