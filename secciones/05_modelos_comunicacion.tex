@@ -1,0 +1,32 @@
+\section{Modelos de comunicación}
+
+\begin{frame}{Spotify: comunicación cliente-servidor}
+  \begin{itemize}
+    \item \textbf{Cliente--servidor:} las aplicaciones envían solicitudes a
+    los servicios de Spotify. El perímetro recibe el tráfico y lo dirige al
+    backend \cite{spotifyIncident2025}.
+    \item \textbf{Solicitud--respuesta:} en la Web API pública, un cliente
+    autorizado envía \texttt{GET /v1/search} mediante HTTPS y recibe los
+    resultados del catálogo en JSON. La respuesta corresponde a esa solicitud \cite{spotifyWebApiSearch}.
+    \item \textbf{Mensajería asíncrona:} la plataforma de datos recopila
+    eventos de uso. Google Cloud Pub/Sub desacopla la publicación de eventos
+    de su consumo y procesamiento posterior \cite{khlebnikova2024dataplatform}.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Flujo de solicitudes y eventos}
+  \centering
+  \IfFileExists{figuras/flujo_comunicacion.png}{%
+    \includegraphics[width=\linewidth,height=0.70\textheight,keepaspectratio]{flujo_comunicacion.png}%
+  }{%
+    \begin{itemize}
+      \item \textbf{Consulta:} el cliente envía una solicitud HTTPS a la
+      Web API de Spotify y recibe una respuesta JSON.
+      \item \textbf{Eventos:} el cliente emite un evento de uso. El servicio
+      de eventos lo publica en Pub/Sub y los consumidores lo procesan después.
+    \end{itemize}%
+  }%
+  \par\smallskip
+  {\scriptsize Elaboración propia a partir de Spotify for Developers y
+  Spotify Engineering \cite{spotifyWebApiSearch,khlebnikova2024dataplatform}.\par}
+\end{frame}

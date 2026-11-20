@@ -1,0 +1,70 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Spotify" id="cK2kINiqBEfT2zL72qT0">
+    <mxGraphModel dx="913" dy="542" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-1" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=none;fontSize=34;fontColor=#182D40;" value="Spotify | Flujo de comunicación" vertex="1">
+          <mxGeometry height="54" width="1160" x="20" y="12" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-2" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=#EAF4FC;fontSize=25;fontColor=#182D40;" value="Solicitud–respuesta · consulta del catálogo" vertex="1">
+          <mxGeometry height="44" width="1160" x="20" y="83" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-3" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=#DCEBF9;fontSize=22;fontColor=#182D40;" value="Cliente autorizado" vertex="1">
+          <mxGeometry height="106" width="260" x="50" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-4" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=#DCEBF9;fontSize=22;fontColor=#182D40;" value="Web API de Spotify" vertex="1">
+          <mxGeometry height="106" width="260" x="890" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-5" edge="1" parent="1" source="gTm-_JcrjLEW3AniVlxd-3" style="endArrow=block;strokeWidth=3;strokeColor=#236477;exitX=1;exitY=0.255;entryX=0;entryY=0.255;" target="gTm-_JcrjLEW3AniVlxd-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-6" edge="1" parent="1" source="gTm-_JcrjLEW3AniVlxd-4" style="endArrow=block;strokeWidth=3;strokeColor=#236477;exitX=0;exitY=0.736;entryX=1;entryY=0.736;" target="gTm-_JcrjLEW3AniVlxd-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-7" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=none;fontSize=20;fontColor=#182D40;" value="HTTPS · GET /v1/search" vertex="1">
+          <mxGeometry height="30" width="500" x="350" y="147" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-8" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=none;fontSize=20;fontColor=#182D40;" value="HTTPS · resultados en JSON" vertex="1">
+          <mxGeometry height="30" width="500" x="350" y="237" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-9" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=#E9F5EF;fontSize=25;fontColor=#182D40;" value="Publicación–suscripción · eventos de uso" vertex="1">
+          <mxGeometry height="44" width="1160" x="20" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-10" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=#D8EEE2;fontSize=22;fontColor=#182D40;" value="App de Spotify" vertex="1">
+          <mxGeometry height="75" width="210" x="30" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-11" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=#D8EEE2;fontSize=22;fontColor=#182D40;" value="Servicio de&#xa;eventos" vertex="1">
+          <mxGeometry height="75" width="210" x="340" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-12" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=#D8EEE2;fontSize=22;fontColor=#182D40;" value="Google Cloud&#xa;Pub/Sub" vertex="1">
+          <mxGeometry height="75" width="210" x="650" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-13" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=#D8EEE2;fontSize=22;fontColor=#182D40;" value="Consumidores&#xa;de eventos" vertex="1">
+          <mxGeometry height="75" width="210" x="960" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-14" edge="1" parent="1" source="gTm-_JcrjLEW3AniVlxd-10" style="endArrow=block;strokeWidth=3;strokeColor=#236477;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="gTm-_JcrjLEW3AniVlxd-11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-15" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=none;fontSize=16;fontColor=#182D40;" value="Evento" vertex="1">
+          <mxGeometry height="28" width="100" x="240" y="399" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-16" edge="1" parent="1" source="gTm-_JcrjLEW3AniVlxd-11" style="endArrow=block;strokeWidth=3;strokeColor=#236477;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="gTm-_JcrjLEW3AniVlxd-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-17" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=none;fontSize=16;fontColor=#182D40;" value="Publicación" vertex="1">
+          <mxGeometry height="28" width="100" x="550" y="399" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-18" edge="1" parent="1" source="gTm-_JcrjLEW3AniVlxd-12" style="endArrow=block;strokeWidth=3;strokeColor=#236477;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="gTm-_JcrjLEW3AniVlxd-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-19" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=none;fontSize=16;fontColor=#182D40;" value="Suscripción" vertex="1">
+          <mxGeometry height="28" width="100" x="860" y="399" as="geometry" />
+        </mxCell>
+        <mxCell id="gTm-_JcrjLEW3AniVlxd-20" parent="1" style="rounded=1;whiteSpace=wrap;html=0;strokeColor=none;fillColor=none;fontSize=17;fontColor=#182D40;" value="Flujos simplificados · Spotify for Developers y Spotify Engineering" vertex="1">
+          <mxGeometry height="30" width="1160" x="20" y="482" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
