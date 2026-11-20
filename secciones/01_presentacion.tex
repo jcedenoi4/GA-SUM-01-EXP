@@ -1,0 +1,44 @@
+% =====================================================================
+% Apartado 1: Presentación del sistema (1 diapositiva, ~1 minuto)
+% Responsable y expositor: Apunte Pazmiño Washington German
+% Claves del .bib: spotifyAbout2026, spotifyQ32026, vansteen2023ds,
+%                  strid2023fleet
+% Cifras del 3T 2026: tabla «User & Financial Summary» de la sección
+% Executive Summary del informe (p. 3 según su índice).
+% Libro de van Steen: cap. 2, «Cloud computing». Cuando tengas la página
+% exacta de tu PDF, cambia [cap.~2] por [p.~XX].
+% Asistencia de IA (Claude): borrador del texto; lo revisé contra las
+% fuentes y lo ajusté a mi forma de explicarlo.
+% =====================================================================
+\section{Presentación del sistema}
+
+\begin{frame}{Spotify: un servicio de audio a escala mundial}
+  \begin{itemize}
+    \item \textbf{Resuelve:} descubrir y escuchar música, pódcasts y
+      audiolibros en un solo lugar \cite{spotifyAbout2026}.
+    \item \textbf{Lo usan:} oyentes gratis con anuncios y suscriptores
+      que pagan Premium \cite[p.~3]{spotifyQ32026}.
+  \end{itemize}
+
+  \medskip
+  \centering
+  \begin{tabular}{@{}lr@{}}
+    \toprule
+    \textbf{Escala en el 3.\textsuperscript{er} trimestre de 2026} &
+      \textbf{Cifra (crecimiento anual)} \\
+    \midrule
+    Usuarios activos al mes (MAU)  & 788 millones (+11\,\%) \cite[p.~3]{spotifyQ32026} \\
+    Suscriptores Premium           & 306 millones (+9\,\%) \cite[p.~3]{spotifyQ32026} \\
+    Usuarios gratis con anuncios   & 499 millones (+12\,\%) \cite[p.~3]{spotifyQ32026} \\
+    Mercados donde está disponible & 184 \cite{spotifyAbout2026} \\
+    \bottomrule
+  \end{tabular}
+
+  \medskip
+  \raggedright
+  {\footnotesize \textbf{Nube:} el proveedor ofrece su infraestructura, su
+  plataforma o sus aplicaciones como servicio (IaaS, PaaS, SaaS)
+  \cite[p.~99]{vansteen2023ds}. Spotify trabaja con Google Cloud desde
+  2016 y trasladó allí su plataforma con \emph{lift and shift}
+  \cite{strid2023fleet}.\par}
+\end{frame}
