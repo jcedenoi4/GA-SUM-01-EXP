@@ -6,13 +6,13 @@
     \textbf{Transparencia} & \textbf{Ejemplo y alcance} \\
     \hline
     Acceso &
-      Al pulsar \emph{Reproducir}, el usuario controla la pista desde la
-      aplicación. Incluso con audio sin pérdida, la app se encarga de
-      cargar y guardar el audio en caché \cite{spotifyLossless2025}. \\[0.7em]
+      Desde la app, el usuario puede reproducir música
+      tras activar la calidad sin pérdida. Spotify presenta la calidad
+      como una preferencia de reproducción \cite{spotifyLossless2025}. \\[0.7em]
     Ubicación &
-      Al abrir una canción compartida, el oyente no elige el servidor.
-      Spotify documenta que su perímetro distribuye el tráfico entre
-      regiones de nube \cite{spotifySharing2025,spotifyIncident2025}. \\
+      La app accede al servicio sin que el usuario elija una región.
+      El perímetro de Spotify recibe las solicitudes y distribuye el
+      tráfico mediante regiones de nube \cite{spotifyIncident2025}. \\
   \end{tabular}
 \end{frame}
 
@@ -22,16 +22,14 @@
     \textbf{Transparencia} & \textbf{Ejemplo y alcance} \\
     \hline
     Replicación &
-      \emph{Offline Backup} usa copias temporales en el dispositivo de
-      canciones escuchadas recientemente. El usuario selecciona la pista
-      desde la app. La función demuestra el uso de caché local; la
-      replicación entre servidores queda sin confirmar
-      \cite{spotifyOffline2024}. \\[0.7em]
+      Replicación entre servidores: sin confirmar en las fuentes
+      consultadas. \emph{Offline Backup} documenta el uso de pistas en
+      la caché del dispositivo \cite{spotifyOffline2024}. \\[0.7em]
     Fallos &
-      Sin conexión, \emph{Offline Backup} permite acceder a parte del
-      contenido en caché. En abril de 2025, una caída del perímetro
-      interrumpió gran parte del tráfico pese a los reintentos de la app
-      \cite{spotifyOffline2024,spotifyIncident2025}. \\
+      \emph{Offline Backup} permite reproducir pistas en caché cuando
+      se pierde la conexión \cite{spotifyOffline2024}. La caída del
+      perímetro del 16 de abril de 2025 interrumpió la mayor parte
+      del tráfico \cite{spotifyIncident2025}. \\
   \end{tabular}
 
   \medskip
