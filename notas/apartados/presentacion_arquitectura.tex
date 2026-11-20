@@ -10,67 +10,49 @@
 
 \subsection*{Apartado 1: Presentación del sistema (expone Washington Apunte, 1 min)}
 
-Spotify sirve para descubrir, organizar y escuchar música, pódcasts y
-audiolibros desde una sola app. Tiene más de 100 millones de canciones y
-8 millones de títulos de pódcast, y está en 184 mercados
-\cite{spotifyAbout2026}. Lo usan dos grupos: quienes escuchan gratis con
-anuncios y quienes pagan Premium. En el tercer trimestre de 2026 llegó a
-788 millones de usuarios activos al mes, 11\,\% más que un año antes. De
-ellos, 306 millones son suscriptores Premium y 499 millones usan la
-versión con anuncios \cite[p.~3]{spotifyQ32026}.
+Spotify es una app para escuchar música, pódcasts y audiolibros, y está
+en 184 mercados \cite{spotifyAbout2026}. En el tercer trimestre de 2026
+tuvo 788 millones de usuarios activos al mes: 306 millones pagan Premium
+y 499 millones escuchan gratis con anuncios \cite[p.~3]{spotifyQ32026}.
 
-Con esa escala no basta un servidor, ni siquiera un centro de datos
-pequeño. Por eso Spotify es un sistema distribuido y corre en la nube.
-La nube, dicho simple, es usar la infraestructura, la plataforma o las
-aplicaciones de un proveedor como un servicio: IaaS, PaaS o SaaS
-\cite[p.~99]{vansteen2023ds}. Spotify trabaja con Google Cloud desde
-2016 y llevó allí su plataforma con \emph{lift and shift}, es decir,
-moviendo lo que ya tenía \cite{strid2023fleet}. Antes corría sus
-pipelines de datos en un clúster Hadoop propio, el más grande de Europa
-\cite{khlebnikova2024dataplatform}.
+Tanta gente no cabe en un solo servidor. Spotify reparte el trabajo
+entre muchas máquinas y las alquila en la nube, que es usar la
+infraestructura, la plataforma o el software de un proveedor como
+servicio \cite[p.~99]{vansteen2023ds}. Está en Google Cloud desde 2016,
+y al principio movió sus sistemas tal como estaban, sin rehacerlos
+\cite{strid2023fleet}.
 
 \subsection*{Apartado 2: Arquitectura (expone Washington Apunte, 2 min)}
 
 \paragraph{Componentes.}
-Recorro el diagrama de izquierda a derecha. El usuario pulsa
-«reproducir» y la app manda la petición por internet; si no recibe
-respuesta, la vuelve a intentar \cite{spotifyIncident2025}. La petición
-entra a una región de nube. La primera pieza que la recibe es el
-perímetro, hecho con Envoy Proxy, y desde ahí pasa a los servicios de
-backend \cite{spotifyIncident2025}. Esos servicios son miles de
-componentes en producción, organizados como microservicios
-\cite{gustavsson2023fleet}, y cada squad se encarga de los suyos
-\cite{strid2023fleet}. Aparte, la app genera eventos de uso. La
-plataforma de datos los recoge en colas Pub/Sub y los procesa en
-BigQuery, Flink o Dataflow. Son más de un billón de eventos al día y más
-de 38\,000 pipelines programados \cite{khlebnikova2024dataplatform}.
+El diagrama se lee de izquierda a derecha. Cuando alguien pulsa
+«reproducir», la app manda la petición y, si no hay respuesta, la
+repite. Esa petición llega primero a Envoy, el perímetro, que la pasa a
+los servicios de backend \cite{spotifyIncident2025}. Son miles de
+microservicios \cite{gustavsson2023fleet}, y cada squad cuida los suyos
+\cite{strid2023fleet}. Por otro camino viajan los eventos de uso: entran
+a colas Pub/Sub y se procesan en BigQuery, Flink o Dataflow. Hablamos de
+más de un billón de eventos al día y más de 38\,000 pipelines
+programados \cite{khlebnikova2024dataplatform}.
 
 \paragraph{La nube en la arquitectura.}
-En el diagrama se ven cuatro ideas de nube. La primera son las regiones:
-el informe de la caída de 2025 habla de Europa, EE.\,UU. y Asia-Pacífico.
-La segunda son los contenedores: Kubernetes ejecuta las instancias del
-perímetro, cada una con un límite de memoria. El 16 de abril de 2025
-Envoy podía usar más memoria que ese límite; Kubernetes apagaba las
-instancias y el ciclo se repetía. Asia-Pacífico siguió funcionando porque
-a esa hora tenía menos tráfico \cite{spotifyIncident2025}. La tercera es
-la diferencia entre IaaS y PaaS. El \emph{lift and shift} se parece a
-IaaS, porque es llevar tu sistema a la infraestructura del proveedor
-\cite{strid2023fleet}. La plataforma de datos, en cambio, se apoya en
-servicios administrados como Pub/Sub y BigQuery, y eso ya es PaaS
-\cite{khlebnikova2024dataplatform}. La cuarta es la gestión a escala: con
-Fleet Management, el parche de Log4j llegó al 80\,\% de los servicios de
-backend en 9 horas \cite{gustavsson2023fleet}.
+Envoy corre en Kubernetes, y cada instancia tiene un límite de memoria.
+El 16 de abril de 2025 Envoy pasó ese límite, Kubernetes lo reiniciaba
+y el problema volvía. Asia-Pacífico aguantó porque a esa hora tenía
+poco tráfico \cite{spotifyIncident2025}. Mover los sistemas tal cual se
+parece a IaaS \cite{strid2023fleet}; los datos, al usar servicios
+administrados como BigQuery, ya son PaaS
+\cite{khlebnikova2024dataplatform}. Y con Fleet Management el parche de
+Log4j llegó al 80\,\% de los servicios en 9 horas
+\cite{gustavsson2023fleet}.
 
 \paragraph{Ejemplo propio: SREI.}
-SREI es nuestro PFC: un sistema web para registrar los eventos
-interculturales de la UTEQ. Tiene un frontend en Angular que llama a una
-sola API REST en Spring Boot, con PostgreSQL y los archivos guardados en
-la carpeta \texttt{/uploads} del mismo servidor. Es cliente-servidor en
-capas, centralizado, y lo desplegamos en local para las pruebas. Nuestro
-propio requisito QR-003 pide que funcione sin grandes fallos en los días
-laborables, pero si ese servidor se apaga en pleno evento, se cae todo:
-es un punto único de fallo. No por eso tocaría copiar los microservicios
-de Spotify. Adoptarlos no es trivial y sus retos se deben evaluar según
-los requisitos de cada proyecto \cite[p.~1]{soylemez2022microservices}.
-Para el tamaño de SREI, yo empezaría por sacar los archivos a un
-almacenamiento aparte y usar una base de datos administrada.
+SREI, nuestro PFC, registra los eventos interculturales de la UTEQ. Es
+un frontend en Angular con una sola API en Spring Boot, PostgreSQL y
+los archivos en el mismo servidor. Es cliente-servidor en capas y, por
+ahora, lo probamos en local. Si ese servidor cae durante un
+evento, se cae todo, aunque nuestro requisito QR-003 pide lo contrario.
+Copiar los microservicios de Spotify sería exagerado: hay que medir sus
+retos según cada proyecto \cite[p.~1]{soylemez2022microservices}. Yo
+empezaría por algo más pequeño: sacar los archivos a otro
+almacenamiento y pasar la base de datos a un servicio administrado.
