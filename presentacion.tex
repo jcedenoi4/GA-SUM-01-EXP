@@ -1,0 +1,81 @@
+% =====================================================================
+% presentacion.tex - Archivo principal de las diapositivas (EXP-1)
+% Aplicaciones Distribuidas (ISR-701) - UTEQ
+%
+% Compilacion (desde la carpeta raiz del repositorio):
+%   pdflatex presentacion
+%   biber    presentacion
+%   pdflatex presentacion
+%   pdflatex presentacion
+%
+% Cada integrante escribe sus diapositivas en secciones/NN_nombre.tex.
+% Este archivo solo las une; no se escribe contenido aqui.
+% =====================================================================
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[american,spanish,es-noshorthands,es-tabla,es-nodecimaldot,es-noquoting]{babel}
+\usepackage{csquotes}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[backend=biber,style=ieee,language=american,autolang=other,urldate=long]{biblatex}
+\addbibresource{referencias.bib}
+% Fecha de consulta como en IEEE ("Accessed: Nov. 19, 2026") en cualquier version de biblatex-ieee
+\DefineBibliographyStrings{american}{urlseen = {Accessed\addcolon}}
+\DeclareFieldFormat{urldate}{\bibstring{urlseen}\space#1}
+
+\graphicspath{{figuras/}}
+
+\usetheme{Madrid}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{bibliography item}[text]
+\setbeamercolor{bibliography entry author}{fg=black}
+\setbeamercolor{bibliography entry title}{fg=black}
+\setbeamercolor{bibliography entry location}{fg=black}
+\setbeamercolor{bibliography entry note}{fg=black}
+
+% Incluye una seccion solo si su archivo ya existe en secciones/.
+% Si falta, la compilacion sigue y deja un aviso en presentacion.log.
+% Antes de la entrega final, revisar que no quede ningun aviso "Falta el archivo".
+\newcommand{\seccion}[1]{%
+  \InputIfFileExists{secciones/#1.tex}{}{%
+    \PackageWarningNoLine{presentacion}{Falta el archivo secciones/#1.tex}}}
+
+% ---------------- Datos de la portada (revisar con el equipo) ----------------
+\title[EXP-1: Spotify]{Exposición del primer corte (EXP-1)}
+\subtitle{Sistema analizado: Spotify}
+\author[Apunte, Cedeño, Mendoza, Muñoz]{%
+  \mbox{Apunte Pazmiño Washington German} \and
+  \mbox{Cedeño Intriago Jilmar Jesus}\\
+  \mbox{Mendoza Villarroel Elian Jossue} \and
+  \mbox{Muñoz Vera Melanie Michelle}}
+\institute[UTEQ]{%
+  Universidad Técnica Estatal de Quevedo\\
+  Facultad de Ciencias de la Computación -- Carrera de Software\\
+  Aplicaciones Distribuidas (ISR-701), séptimo nivel, paralelo B\\
+  Docente: Gleiston Guerrero Ulloa, PhD}
+\date{Noviembre de 2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+% ---------------- Secciones (una por integrante y apartado) ----------------
+\seccion{01_presentacion}       % Washington
+\seccion{02_arquitectura}       % Washington
+\seccion{03_transparencias}     % Jilmar
+\seccion{04_cap_pacelc}         % Elian
+\seccion{05_modelos_comunicacion} % Jilmar
+\seccion{06_tolerancia_fallos}  % Melanie
+\seccion{07_comparacion}        % Elian
+\seccion{08_pfc_conclusiones}   % Melanie
+
+% ---------------- Referencias ----------------
+\begin{frame}[allowframebreaks]{Referencias}
+  \printbibliography[heading=none]
+\end{frame}
+
+\end{document}
