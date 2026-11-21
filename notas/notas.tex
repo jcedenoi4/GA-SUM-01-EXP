@@ -1,0 +1,66 @@
+% Asistencia de IA (Codex): integración de notas, síntesis provisional y maquetación.
+% Compilar desde la raíz con pdflatex notas/notas.tex, biber notas y dos pdflatex.
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[american,spanish,es-noshorthands,es-tabla,es-nodecimaldot,es-noquoting]{babel}
+\usepackage{csquotes}
+\usepackage{graphicx,booktabs,tabularx}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage[backend=biber,style=ieee,language=american,autolang=other]{biblatex}
+\addbibresource{referencias.bib}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.35em}
+\emergencystretch=1em
+
+\begin{document}
+\begin{center}
+  {\Large\bfseries Notas de exposición}\\[0.3em]
+  {\large Spotify como sistema distribuido en la nube}\\[0.3em]
+  Aplicaciones Distribuidas (ISR-701) · UTEQ · Séptimo nivel, paralelo B
+\end{center}
+
+\input{notas/apartados/presentacion_arquitectura}
+
+\subsection*{Apartados 3 y 5. Transparencias y comunicación (Jilmar Cedeño, 3 min)}
+\textit{Síntesis de las diapositivas para revisión del expositor.}
+La app de Spotify ofrece ajustes de calidad. La reproducción sin pérdida
+requiere Premium y disponibilidad en el mercado. El perímetro dirige el
+tráfico sin que el usuario elija una región. Con Offline Backup, los
+usuarios Premium pueden reproducir algunas pistas de la caché sin conexión \cite{spotifyLossless2025,spotifyIncident2025,spotifyOffline2024}.
+En la búsqueda pública, una solicitud HTTPS recibe los resultados en JSON.
+Los eventos de uso siguen otro flujo. Pub/Sub separa su publicación de su
+procesamiento posterior \cite{spotifyWebApiSearch,khlebnikova2024dataplatform}.
+
+\subsection*{Apartados 4 y 7. CAP, PACELC y comparación (Elian Mendoza, 3 min)}
+\textit{Se incluye su borrador técnico. El análisis específico de Spotify y
+la comparación con otro sistema están pendientes en ese aporte.}
+\begingroup
+\let\subsection\subsubsection
+\input{notas/apartados/cap_comparacion}
+\endgroup
+
+\input{notas/apartados/fallos_conclusiones}
+
+\subsection*{Aportes del equipo}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+  \toprule
+  \textbf{Integrante} & \textbf{Aportes registrados} \\
+  \midrule
+  Washington Apunte & Presentación, arquitectura, diagrama, bosquejo, notas y README. \\
+  Jilmar Cedeño & Transparencias, comunicación y diagrama de flujo. \\
+  Elian Mendoza & Borrador de CAP y PACELC y aportes a la bibliografía. \\
+  Melanie Muñoz & Tolerancia a fallos, diagrama causal, sección 8, notas, bitácora y PDF para el SGA. \\
+  \bottomrule
+\end{tabularx}
+
+\renewcommand*{\bibfont}{\footnotesize}
+\setlength{\bibitemsep}{0pt}
+\printbibliography[title={Referencias citadas}]
+
+\clearpage
+\section*{Anexo. Bosquejo de arquitectura}
+\begin{center}
+  \includegraphics[width=\linewidth,height=0.76\textheight,keepaspectratio]{evidencias/boceto_equipo.jpg}
+\end{center}
+\end{document}

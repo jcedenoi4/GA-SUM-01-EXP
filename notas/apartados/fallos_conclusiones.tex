@@ -1,0 +1,27 @@
+% Asistencia de IA (Codex): síntesis del informe y redacción del borrador.
+\subsection*{Apartado 6. Tolerancia a fallos (Melanie Muñoz, 2 min)}
+
+El 16 de abril de 2025, Spotify cambió el orden de sus filtros de Envoy en
+todas las regiones. El cambio activó un defecto que derribó las instancias
+del perímetro. A las 12:20 UTC saltaron las alarmas por una caída del
+tráfico. Los reinicios simultáneos y los reintentos de los clientes
+dispararon la carga. Como el máximo de memoria de Envoy superaba el límite
+de Kubernetes, las nuevas instancias volvían a detenerse. Asia-Pacífico
+soportó el fallo con menos carga. Spotify añadió capacidad para romper el
+ciclo, corrigió el defecto y el desajuste de memoria, y anunció mejoras en
+los despliegues y el monitoreo \cite{spotifyIncident2025}.
+
+\subsection*{Apartado 8. PFC y conclusiones (Melanie Muñoz, 1 min)}
+
+Washington propone separar los archivos de SREI y migrar PostgreSQL a un
+servicio administrado. Así, los archivos y la base de datos dejan de depender
+del servidor donde corre la aplicación. Los aportes de Jilmar, Elian y
+Melanie quedan pendientes de confirmar.
+
+La distribución regional oculta al usuario la ubicación del servicio, pero
+un cambio simultáneo puede propagar el mismo fallo a varias regiones.
+Spotify separa la búsqueda por solicitud y respuesta del procesamiento
+asíncrono de eventos \cite{spotifyIncident2025,spotifyWebApiSearch,khlebnikova2024dataplatform}.
+Para analizar CAP o PACELC hay que identificar qué operación y qué estado
+compartido se estudian. La caída de Envoy por sí sola describe un fallo del
+perímetro, sin establecer cómo se comporta una réplica ante una partición.

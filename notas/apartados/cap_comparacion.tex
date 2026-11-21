@@ -19,15 +19,11 @@ sistema debe seguir funcionando a pesar de una partición de red, tendrá que
 priorizar una de estas dos propiedades \cite[p.~2]{lee2023consistency}.
 
 \paragraph{Consistencia (C).}
-La consistencia se refiere al acuerdo entre los componentes distribuidos
-sobre el valor del estado compartido \cite[p.~2]{lee2023consistency}, es
-decir, que cada servidor devuelva la respuesta correcta a cada solicitud
-\cite[Sec.~2]{gilbert2012perspectives}. En los sistemas distribuidos
-replicados, la consistencia fuerte garantiza que una lectura siempre refleje
-la escritura más reciente y que todos los nodos almacenen la misma
-información \cite[p.~172]{ahmed2023consistency}. Por eso se considera una
-propiedad de seguridad: nunca debe enviarse al cliente una respuesta
-incorrecta \cite[Sec.~1]{gilbert2012perspectives}.
+En el sentido de CAP, la consistencia fuerte exige que las operaciones se
+observen como si ocurrieran en una sola copia y en un orden compatible con
+el tiempo real \cite[Sec.~2]{gilbert2012perspectives}. Se trata de una
+propiedad de seguridad: las respuestas deben respetar esa garantía
+\cite[Sec.~1]{gilbert2012perspectives}.
 
 \paragraph{Disponibilidad (A) y tolerancia a particiones (P).}
 La disponibilidad es la capacidad de responder a las solicitudes de los
@@ -46,13 +42,12 @@ renuncian a la disponibilidad; los sistemas AP, como Cassandra, Dynamo o
 Riak, relajan la consistencia \cite[p.~172]{ahmed2023consistency}.
 
 \paragraph{Teorema PACELC.}
-PACELC extiende CAP al caso en que la red funciona con normalidad. Ante una
-partición, la decisión sigue siendo entre disponibilidad y consistencia; sin
-partición, la decisión pasa a ser entre latencia y consistencia
-\cite[p.~172]{ahmed2023consistency}, \cite[p.~16]{lima2023causal}. Los
-sistemas tienden a ser consistentes todo el tiempo, a costa de la
-disponibilidad bajo partición o de la latencia en operación normal, o al
-revés: sacrifican la consistencia en ambos casos \cite[p.~16]{lima2023causal}.
+PACELC plantea dos decisiones en sistemas replicados. Si hay una partición,
+el compromiso es entre disponibilidad y consistencia. Si no hay una
+partición, el compromiso es entre latencia y consistencia
+\cite{ahmed2023consistency}. Un caso del segundo compromiso es el acceso
+causal en almacenamiento georreplicado, donde esperar a que se sincronicen
+las réplicas puede retrasar el acceso \cite{lima2023causal}.
 
 \subsection*{Postura crítica}
 
@@ -61,9 +56,9 @@ aplicación. En un cruce controlado por vehículos autónomos conviene la
 consistencia, porque todos deben compartir la misma información antes de
 avanzar; en cambio, en el sistema de frenado conviene la disponibilidad,
 porque la reacción tiene que ser inmediata
-\cite[pp.~2--3]{lee2023consistency}. De forma similar, en una tienda en
-línea se acepta que el inventario muestre datos con algo de retraso, pero no
-que un pago quede registrado de forma incorrecta
+\cite[pp.~2--3]{lee2023consistency}. En una tienda en línea, una consulta
+puede devolver datos desactualizados, mientras que la compra requiere
+consistencia para que el pedido refleje lo que eligió el cliente
 \cite[Sec.~4.4]{gilbert2012perspectives}. En consecuencia, ningún sistema es
 superior en todos los casos: cada uno equilibra estas propiedades según su
 propósito.
