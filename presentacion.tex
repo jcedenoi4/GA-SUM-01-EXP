@@ -28,6 +28,7 @@
 \graphicspath{{figuras/}}
 
 \usetheme{Madrid}
+\setbeamertemplate{footline}{}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{bibliography item}[text]
 \setbeamercolor{bibliography entry author}{fg=black}
@@ -74,7 +75,11 @@
 \seccion{08_pfc_conclusiones}   % Melanie
 
 % ---------------- Referencias ----------------
+\setbeamertemplate{frametitle continuation}{%
+  \ifnum\insertcontinuationcount>1\relax\space (continuación)\fi}
 \begin{frame}[allowframebreaks]{Referencias}
+  \footnotesize
+  \setlength{\bibitemsep}{0.35em}
   \printbibliography[heading=none]
 \end{frame}
 
