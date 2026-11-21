@@ -1,6 +1,6 @@
 % =====================================================================
 % Apartado 7: Comparación y postura crítica (1 min) -- Responsable: Elian Mendoza
-% 
+% Codex asistió en las precisiones para revisión de Elian.
 % =====================================================================
 \section{Comparación y postura crítica}
 
@@ -13,28 +13,28 @@
     \textbf{Criterio} & \textbf{Spotify} & \textbf{SoundCloud} \\
     \midrule
     Arquitectura &
-      Más de 1.200 servicios en línea migrados a Google Cloud
+      Unos 1.200 servicios y flujos de datos migrados a Google Cloud
       \cite{googleSpotify} &
       Microservicios con capa BFF; sustituyó un monolito en Ruby on
       Rails \cite{obrien2022strangler} \\
     Almacenamiento &
       Cassandra para personalización \cite{mishra2015personalization} &
-      Cassandra \cite{pythianSoundcloud}; Roshi, sistema propio sobre
-      Redis \cite{bourgon2014roshi} \\
+      Cassandra \cite{pythianSoundcloud}; Roshi, caso histórico sobre
+      Redis \cite{bourgon2014roshi,soundcloudRoshi} \\
     Consistencia &
       Configurable por operación: ONE o QUORUM \cite{cody2015cassandra} &
       Roshi: CRDT de tipo LWW, quórum de escritura y reparación en
-      lectura \cite{almeida2024crdt,soundcloudRoshi} \\
+      algunas estrategias de lectura \cite{almeida2024crdt,soundcloudRoshi} \\
     CAP &
       Padlock: Cassandra de alta disponibilidad con lecturas LOCAL\_ONE
       por región \cite{leenders2018padlock} &
       Roshi: tolerante a particiones, altamente disponible y
       eventualmente consistente \cite{soundcloudRoshi} \\
     PACELC &
-      Latencia sobre consistencia
+      La ruta local de Padlock y la personalización favorecen baja latencia
       \cite{mishra2015personalization,leenders2018padlock} &
-      No documentado explícitamente; Roshi no espera consenso entre
-      réplicas \cite{soundcloudRoshi} \\
+      Roshi permite converger sin consenso para ordenar las actualizaciones.
+      Las escrituras esperan un quórum \cite{soundcloudRoshi} \\
     \bottomrule
   \end{tabular}
 \end{frame}
@@ -80,8 +80,8 @@
 % ---------------------------------------------------------------------
 \begin{frame}{Postura crítica}
   \small
-  Ambos sistemas priorizan la disponibilidad y la baja latencia, aunque
-  con mecanismos distintos:
+  Los casos documentados de personalización y Roshi responden a
+  necesidades distintas.
 
   \bigskip
   \renewcommand{\arraystretch}{1.4}
@@ -89,8 +89,8 @@
     \toprule
     & \textbf{Spotify} & \textbf{SoundCloud (Roshi)} \\
     \midrule
-    Mecanismo & Ajusta cuántas réplicas deben responder & Evita el
-      consenso mediante CRDT \\
+    Mecanismo & Ajusta cuántas réplicas deben responder & Converge
+      con un CRDT al recibir las mismas actualizaciones \\
     Conveniente\newline cuando & Distintos datos requieren distintos
       niveles de consistencia & La prioridad es no bloquear las
       operaciones \\
@@ -100,6 +100,6 @@
   \end{tabular}
 
   \bigskip
-  En consecuencia, ninguno es superior en términos absolutos: la elección
-  depende de los requisitos de cada tipo de dato.
+  La elección depende de qué retraso y pérdida de datos tolera cada flujo.
+  Las cifras de latencia proceden de cargas y percentiles distintos.
 \end{frame}

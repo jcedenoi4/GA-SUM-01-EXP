@@ -1,6 +1,7 @@
 % =====================================================================
 % Apartado 4: CAP y PACELC (2 min) -- Responsable: Elian Mendoza
 % Solo usa paquetes que ya carga presentacion.tex (booktabs, biblatex).
+% Codex asistió en las precisiones sobre CAP/PACELC para revisión de Elian.
 % =====================================================================
 \section{CAP y PACELC}
 
@@ -18,7 +19,7 @@
     \textbf{Propiedad} & \textbf{Definición} \\
     \midrule
     Consistencia (C) & Toda lectura refleja la escritura más reciente \\
-    Disponibilidad (A) & Toda solicitud recibe una respuesta \\
+    Disponibilidad (A) & Cada solicitud a un nodo operativo se completa \\
     Tolerancia a\newline particiones (P) & El sistema opera aunque se pierda la
       comunicación entre nodos \\
     \bottomrule
@@ -32,7 +33,7 @@
 
 % ---------------------------------------------------------------------
 \begin{frame}{Comportamiento ante una partición}
-  Si una réplica no responde dentro del tiempo de espera, el diseño
+  Si se interrumpe la comunicación entre grupos de réplicas, el diseño
   determina la respuesta del sistema.
 
   \bigskip
@@ -76,9 +77,8 @@
 
   \bigskip
   \raggedright
-  La consistencia fuerte requiere coordinar réplicas mediante protocolos
-  de consenso; el tiempo de respuesta aumenta con el número de nodos y la
-  distancia entre ellos.
+  Coordinar réplicas para mantener una vista consistente puede añadir
+  espera, sobre todo si la operación depende de réplicas remotas.
 
   \vfill
   \footnotesize Fuentes: \cite[p.~172]{ahmed2023consistency},
@@ -102,16 +102,16 @@
     Lecturas & Nivel LOCAL\_ONE; reintento con LOCAL\_QUORUM solo si no
       encuentra la clave \\
     Despliegue & Tres regiones con tres zonas cada una \\
-    Preparación & Pruebas que simulan caídas de centros de datos y
-      divisiones de red \\
+    Recuperación & Traspaso automático entre zonas y redirección manual
+      ante una caída regional \\
     \bottomrule
   \end{tabular}
 
   \bigskip
   \raggedright
-  Al leer de una réplica local, cada región puede seguir respondiendo
-  aunque se pierda la comunicación con las demás: prioriza la
-  disponibilidad (A).
+  Si queda una réplica local accesible y la clave está presente,
+  la lectura puede resolverse sin coordinar regiones. Esa ruta
+  favorece la disponibilidad.
 
   \vfill
   \footnotesize Fuente: \cite{leenders2018padlock} (documentación técnica
@@ -131,9 +131,9 @@
       reconstruirse desde el flujo de escucha \\
     Decisión & Menor consistencia inmediata entre réplicas a cambio de
       menor latencia \\
-    Mismo criterio & Padlock tolera unos segundos de retraso en las
-      actualizaciones para minimizar la latencia \\
-    Clasificación PACELC & Con partición, A; sin partición, L: PA/EL \\
+    Matiz de Padlock & Acepta segundos de retraso en algunas
+      actualizaciones y exige visibilidad inmediata en altas nuevas \\
+    Lectura local & Tendencia PA/EL en la ruta de lectura de Padlock \\
     \bottomrule
   \end{tabular}
 
@@ -155,15 +155,15 @@
     \toprule
     \textbf{Clúster} & \textbf{Nivel ONE} & \textbf{Nivel QUORUM} \\
     \midrule
-    3 nodos & No cumple el objetivo & No reportado \\
+    3 nodos & Fuera del objetivo & --- \\
     6 nodos & Cumple (cerca de 90\,000 operaciones/s) & Cumple \\
     \bottomrule
   \end{tabular}
 
   \bigskip
   \raggedright
-  En esta prueba, ampliar el clúster permitió elevar el nivel de
-  consistencia sin superar el límite de latencia.
+  Con seis nodos, QUORUM también cumplió el objetivo de latencia
+  en esta prueba de carga. El ensayo evaluó rendimiento.
 
   \vfill
   \footnotesize Fuente: \cite{cody2015cassandra}.

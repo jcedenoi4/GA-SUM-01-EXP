@@ -1,6 +1,7 @@
 % =====================================================================
 % Notas técnicas: Apartado 4 (CAP y PACELC) y Apartado 7 (Comparación)
 % Responsable y expositor: Mendoza Villarroel Elian Jossue
+% Codex asistió en las precisiones de alcance, réplicas y mediciones.
 % Se incluye en notas/notas.tex con \input{notas/apartados/cap_comparacion}
 % Claves del .bib: ahmed2023consistency, lee2023consistency,
 %   gilbert2012perspectives, lima2023causal, almeida2024crdt,
@@ -48,25 +49,25 @@ Spotify eligió Cassandra por su replicación global y su alta
 disponibilidad, y lo desplegó en tres regiones con tres zonas cada una.
 Todas las lecturas usan el nivel LOCAL\_ONE y solo reintentan con
 LOCAL\_QUORUM si no encuentran la clave; además, el equipo prueba caídas de
-centros de datos y divisiones de red \cite{leenders2018padlock}. Como cada
-región lee de una réplica local, puede seguir respondiendo aunque pierda la
-comunicación con las demás: ante una partición prioriza la disponibilidad.
+centros de datos y divisiones de red \cite{leenders2018padlock}. Ante una
+partición entre regiones, esa ruta favorece la disponibilidad si queda
+una réplica local accesible que ya tiene la clave.
 
 \paragraph{Spotify sin partición.}
 Spotify guardó los datos de personalización en Cassandra. Como esos datos
 no necesitaban transacciones estrictas y podían reconstruirse a partir de lo
 que escuchan los usuarios, aceptó menos consistencia inmediata a cambio de
 responder más rápido \cite{mishra2015personalization}. Padlock sigue el
-mismo criterio: tolera unos segundos de retraso en las actualizaciones para
-minimizar la latencia \cite{leenders2018padlock}. Por eso Spotify se
-clasifica como PA/EL.
+mismo criterio: tolera unos segundos de retraso en algunas actualizaciones;
+las altas nuevas requieren visibilidad inmediata \cite{leenders2018padlock}.
+PA/EL describe la tendencia de esa ruta de lectura de Padlock.
 
 \paragraph{Ejemplo técnico.}
 En una prueba con un límite de 5~ms en el percentil 95, un clúster de seis
 nodos cumplió el objetivo con el nivel ONE, cerca de 90\,000 operaciones por
 segundo, y también con QUORUM; con tres nodos no lo cumplió ni con ONE
-\cite{cody2015cassandra}. En ese escenario, sumar nodos permitió pedir más
-consistencia sin incumplir el límite de latencia.
+\cite{cody2015cassandra}. En ese escenario, sumar nodos permitió usar
+QUORUM dentro del objetivo de latencia. El ensayo midió rendimiento.
 
 \subsection*{Comparación y postura crítica}
 
@@ -74,11 +75,12 @@ consistencia sin incumplir el límite de latencia.
 SoundCloud resuelve el mismo problema con microservicios y una capa BFF
 \cite{obrien2022strangler}. Usa Cassandra en varios centros de datos, donde
 bajó la latencia de lectura del percentil 99 de 250~ms a 40~ms
-\cite{pythianSoundcloud}, y desarrolló Roshi, un sistema propio sobre Redis
-que se declara tolerante a particiones, altamente disponible y
-eventualmente consistente, y que converge sin consenso mediante un CRDT del
-tipo «gana la última escritura» \cite{soundcloudRoshi},
-\cite[p.~51:29]{almeida2024crdt}.
+\cite{pythianSoundcloud}. Esa cifra y la prueba de Spotify corresponden
+a cargas y percentiles distintos. SoundCloud también desarrolló Roshi,
+un caso histórico sobre Redis cuyo repositorio está archivado. Su CRDT
+resuelve conflictos con la última escritura y converge al recibir las mismas
+actualizaciones. Las escrituras esperan un quórum
+\cite{soundcloudRoshi,almeida2024crdt}.
 
 \paragraph{Postura crítica.}
 Priorizar consistencia o disponibilidad depende de lo que necesite cada
@@ -86,10 +88,9 @@ aplicación. En un cruce controlado por vehículos autónomos conviene la
 consistencia, porque todos deben compartir la misma información antes de
 avanzar; en cambio, en el sistema de frenado conviene la disponibilidad,
 porque la reacción tiene que ser inmediata
-\cite[pp.~2--3]{lee2023consistency}. Spotify y SoundCloud priorizan la
-disponibilidad y la baja latencia, pero con mecanismos distintos: Spotify
-exige más réplicas cuando necesita más consistencia, a costa de mayor
-latencia, mientras que Roshi evita el consenso y acepta no garantizar una
-durabilidad perfecta \cite{soundcloudRoshi}. En consecuencia, ningún sistema
+\cite[pp.~2--3]{lee2023consistency}. En los casos comparados, Spotify
+ajusta cuántas réplicas deben responder. Roshi admite cambios concurrentes,
+converge al sincronizarlos y puede perder datos si fallan suficientes
+réplicas antes de la reparación \cite{soundcloudRoshi}. En consecuencia, ningún sistema
 es superior en todos los casos: cada uno equilibra estas propiedades según
 su propósito.
