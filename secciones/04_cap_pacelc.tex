@@ -1,0 +1,170 @@
+% =====================================================================
+% Apartado 4: CAP y PACELC (2 min) -- Responsable: Elian Mendoza
+% Solo usa paquetes que ya carga presentacion.tex (booktabs, biblatex).
+% =====================================================================
+\section{CAP y PACELC}
+
+% ---------------------------------------------------------------------
+\begin{frame}{Teorema CAP}
+  Un sistema distribuido replicado no puede garantizar simultáneamente
+  las tres propiedades siguientes.
+
+  \bigskip
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{p{0.26\textwidth} p{0.62\textwidth}}
+    \toprule
+    \textbf{Propiedad} & \textbf{Definición} \\
+    \midrule
+    Consistencia (C) & Toda lectura refleja la escritura más reciente \\
+    Disponibilidad (A) & Toda solicitud recibe una respuesta \\
+    Tolerancia a\newline particiones (P) & El sistema opera aunque se pierda la
+      comunicación entre nodos \\
+    \bottomrule
+  \end{tabular}
+
+  \vfill
+  \raggedright
+  \footnotesize Fuentes: \cite[p.~172]{ahmed2023consistency},
+  \cite[p.~2]{lee2023consistency}.
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{Comportamiento ante una partición}
+  Si una réplica no responde dentro del tiempo de espera, el diseño
+  determina la respuesta del sistema.
+
+  \bigskip
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{p{0.20\textwidth} p{0.33\textwidth} p{0.33\textwidth}}
+    \toprule
+    & \textbf{Sistema CP} & \textbf{Sistema AP} \\
+    \midrule
+    Ante la partición & Rechaza la solicitud & Responde con el dato
+      disponible \\
+    Garantiza & Consistencia & Disponibilidad \\
+    Sacrifica & Disponibilidad & Consistencia (el dato puede estar
+      desactualizado) \\
+    \bottomrule
+  \end{tabular}
+
+  \vfill
+  \raggedright
+  \footnotesize Fuentes: \cite[p.~172]{ahmed2023consistency},
+  \cite[p.~51:4]{almeida2024crdt}.
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{Teorema PACELC}
+  PACELC extiende CAP al funcionamiento normal de la red.
+
+  \bigskip
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{p{0.30\textwidth} p{0.56\textwidth}}
+    \toprule
+    \textbf{Situación} & \textbf{Decisión de diseño} \\
+    \midrule
+    Con partición (P) & Disponibilidad (A) o consistencia (C) \\
+    Sin partición (E) & Latencia (L) o consistencia (C) \\
+    \bottomrule
+  \end{tabular}
+
+  \bigskip
+  \raggedright
+  La consistencia fuerte requiere coordinar réplicas mediante protocolos
+  de consenso; el tiempo de respuesta aumenta con el número de nodos y la
+  distancia entre ellos.
+
+  \vfill
+  \footnotesize Fuentes: \cite[p.~172]{ahmed2023consistency},
+  \cite[p.~51:4]{almeida2024crdt}.
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{Spotify ante una partición: el caso de Padlock}
+  Padlock es el servicio central de Spotify que gestiona las claves de
+  cifrado de los datos personales de sus usuarios.
+
+  \bigskip
+  \small
+  \renewcommand{\arraystretch}{1.35}
+  \begin{tabular}{p{0.24\textwidth} p{0.64\textwidth}}
+    \toprule
+    \textbf{Aspecto} & \textbf{Documentación de Spotify} \\
+    \midrule
+    Almacenamiento & Cassandra, elegida por su replicación global y alta
+      disponibilidad \\
+    Lecturas & Nivel LOCAL\_ONE; reintento con LOCAL\_QUORUM solo si no
+      encuentra la clave \\
+    Despliegue & Tres regiones con tres zonas cada una \\
+    Preparación & Pruebas que simulan caídas de centros de datos y
+      divisiones de red \\
+    \bottomrule
+  \end{tabular}
+
+  \bigskip
+  \raggedright
+  Al leer de una réplica local, cada región puede seguir respondiendo
+  aunque se pierda la comunicación con las demás: prioriza la
+  disponibilidad (A).
+
+  \vfill
+  \footnotesize Fuente: \cite{leenders2018padlock} (documentación técnica
+  de Spotify, 2018).
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{Spotify: decisión documentada sin partición}
+  \small
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{p{0.30\textwidth} p{0.58\textwidth}}
+    \toprule
+    \textbf{Aspecto} & \textbf{Documentación de Spotify} \\
+    \midrule
+    Datos analizados & Personalización, almacenada en Apache Cassandra \\
+    Requisito & No requieren transacciones estrictas; pueden
+      reconstruirse desde el flujo de escucha \\
+    Decisión & Menor consistencia inmediata entre réplicas a cambio de
+      menor latencia \\
+    Mismo criterio & Padlock tolera unos segundos de retraso en las
+      actualizaciones para minimizar la latencia \\
+    Clasificación PACELC & Con partición, A; sin partición, L: PA/EL \\
+    \bottomrule
+  \end{tabular}
+
+  \vfill
+  \footnotesize Fuentes: \cite{mishra2015personalization},
+  \cite{leenders2018padlock} (documentación técnica de Spotify).
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{Evidencia técnica: niveles ONE y QUORUM}
+  Prueba de carga de Spotify sobre Cassandra con un objetivo de latencia
+  inferior a 5~ms en el percentil 95.
+
+  \bigskip
+  \centering
+  \small
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{lll}
+    \toprule
+    \textbf{Clúster} & \textbf{Nivel ONE} & \textbf{Nivel QUORUM} \\
+    \midrule
+    3 nodos & No cumple el objetivo & No reportado \\
+    6 nodos & Cumple (cerca de 90\,000 operaciones/s) & Cumple \\
+    \bottomrule
+  \end{tabular}
+
+  \bigskip
+  \raggedright
+  En esta prueba, ampliar el clúster permitió elevar el nivel de
+  consistencia sin superar el límite de latencia.
+
+  \vfill
+  \footnotesize Fuente: \cite{cody2015cassandra}.
+\end{frame}
