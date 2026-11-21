@@ -1,0 +1,105 @@
+% =====================================================================
+% Apartado 7: Comparación y postura crítica (1 min) -- Responsable: Elian Mendoza
+% 
+% =====================================================================
+\section{Comparación y postura crítica}
+
+% ---------------------------------------------------------------------
+\begin{frame}{Comparación con SoundCloud: diseño y consistencia}
+  \scriptsize
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{p{0.16\textwidth} p{0.37\textwidth} p{0.37\textwidth}}
+    \toprule
+    \textbf{Criterio} & \textbf{Spotify} & \textbf{SoundCloud} \\
+    \midrule
+    Arquitectura &
+      Más de 1.200 servicios en línea migrados a Google Cloud
+      \cite{googleSpotify} &
+      Microservicios con capa BFF; sustituyó un monolito en Ruby on
+      Rails \cite{obrien2022strangler} \\
+    Almacenamiento &
+      Cassandra para personalización \cite{mishra2015personalization} &
+      Cassandra \cite{pythianSoundcloud}; Roshi, sistema propio sobre
+      Redis \cite{bourgon2014roshi} \\
+    Consistencia &
+      Configurable por operación: ONE o QUORUM \cite{cody2015cassandra} &
+      Roshi: CRDT de tipo LWW, quórum de escritura y reparación en
+      lectura \cite{almeida2024crdt,soundcloudRoshi} \\
+    CAP &
+      Padlock: Cassandra de alta disponibilidad con lecturas LOCAL\_ONE
+      por región \cite{leenders2018padlock} &
+      Roshi: tolerante a particiones, altamente disponible y
+      eventualmente consistente \cite{soundcloudRoshi} \\
+    PACELC &
+      Latencia sobre consistencia
+      \cite{mishra2015personalization,leenders2018padlock} &
+      No documentado explícitamente; Roshi no espera consenso entre
+      réplicas \cite{soundcloudRoshi} \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{Comparación con SoundCloud: resultados y compromisos}
+  \scriptsize
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{p{0.16\textwidth} p{0.37\textwidth} p{0.37\textwidth}}
+    \toprule
+    \textbf{Criterio} & \textbf{Spotify} & \textbf{SoundCloud} \\
+    \midrule
+    Disponibilidad &
+      Padlock: tres regiones con tres zonas; objetivo de 99,95~\%
+      \cite{leenders2018padlock} &
+      Cassandra en varios centros de datos \cite{pythianSoundcloud};
+      Roshi, normalmente con tres clústeres \cite{soundcloudRoshi} \\
+    Latencia medida &
+      Menos de 5~ms en el percentil 95 con seis nodos
+      \cite{cody2015cassandra} &
+      Lecturas en el percentil 99: de 250~ms a 40~ms
+      \cite{pythianSoundcloud} \\
+    Fortaleza &
+      Nivel de consistencia ajustable por servicio
+      \cite{cody2015cassandra} &
+      Roshi: escrituras rápidas y almacenamiento reducido
+      \cite{bourgon2014roshi} \\
+    Limitación &
+      Con tres nodos no alcanzó el objetivo de latencia
+      \cite{cody2015cassandra} &
+      Roshi no garantiza durabilidad completa y depende de marcas de
+      tiempo correctas \cite{soundcloudRoshi} \\
+    Compromiso &
+      Mayor consistencia mediante niveles de lectura más exigentes, a
+      cambio de mayor latencia
+      \cite{cody2015cassandra,leenders2018padlock} &
+      Escrituras rápidas y almacenamiento reducido, a cambio de lecturas
+      más complejas y consistencia eventual \cite{bourgon2014roshi} \\
+    \bottomrule
+  \end{tabular}
+\end{frame}
+
+% ---------------------------------------------------------------------
+\begin{frame}{Postura crítica}
+  \small
+  Ambos sistemas priorizan la disponibilidad y la baja latencia, aunque
+  con mecanismos distintos:
+
+  \bigskip
+  \renewcommand{\arraystretch}{1.4}
+  \begin{tabular}{p{0.18\textwidth} p{0.34\textwidth} p{0.34\textwidth}}
+    \toprule
+    & \textbf{Spotify} & \textbf{SoundCloud (Roshi)} \\
+    \midrule
+    Mecanismo & Ajusta cuántas réplicas deben responder & Evita el
+      consenso mediante CRDT \\
+    Conveniente\newline cuando & Distintos datos requieren distintos
+      niveles de consistencia & La prioridad es no bloquear las
+      operaciones \\
+    Riesgo & Mayor latencia al exigir más réplicas & Sin durabilidad
+      perfecta: perder réplicas antes de repararlas puede perder datos \\
+    \bottomrule
+  \end{tabular}
+
+  \bigskip
+  En consecuencia, ninguno es superior en términos absolutos: la elección
+  depende de los requisitos de cada tipo de dato.
+\end{frame}
