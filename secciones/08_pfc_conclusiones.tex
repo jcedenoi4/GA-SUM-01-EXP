@@ -1,0 +1,25 @@
+% Asistencia de IA (Codex): síntesis técnica y edición de la diapositiva.
+\section{Lecciones para el PFC y conclusiones}
+
+\begin{frame}{Lecciones de Spotify para los PFC}
+  \small
+  \renewcommand{\arraystretch}{1.22}
+  \begin{tabular}{@{}p{0.26\linewidth}p{0.68\linewidth}@{}}
+    \toprule
+    \textbf{Integrante y PFC} & \textbf{Aplicación en la nube} \\
+    \midrule
+    Washington Apunte (SREI) &
+      Separar el almacenamiento de archivos y mover PostgreSQL a un servicio
+      administrado para reducir la dependencia de un solo servidor. \\
+    Jilmar Cedeño & Aporte por confirmar. \\
+    Elian Mendoza & Aporte por confirmar. \\
+    Melanie Muñoz & Aporte por confirmar. \\
+    \bottomrule
+  \end{tabular}
+
+  \medskip
+  \textbf{Conclusión.} Spotify separa la atención de solicitudes del
+  procesamiento de eventos \cite{spotifyWebApiSearch,khlebnikova2024dataplatform}.
+  El incidente mostró que un cambio simultáneo puede afectar a varias regiones
+  y que los reintentos pueden agravar un fallo \cite{spotifyIncident2025}.
+\end{frame}
