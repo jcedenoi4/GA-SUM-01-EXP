@@ -19,8 +19,14 @@ del servidor donde corre la aplicación. Para el Sistema de gestión de
 documentos de pre-sustentaciones de trabajos de titulación, Jilmar propone
 usar una cola de mensajes en la nube para validar en segundo plano los PDF
 que suben los estudiantes y mostrar el resultado de la validación en el
-estado del expediente. Los aportes de Elian y Melanie quedan pendientes
-de confirmar.
+estado del expediente. El aporte de Elian queda pendiente.
+
+En mi PFC, SGAC (Sistema de Gestión de Ayudantías de Cátedra), ya contamos
+con funciones de respaldo y restauración de PostgreSQL. Propongo automatizar
+copias cifradas en la nube y guardar versiones de los adjuntos. Tras un
+fallo, restauraría la base y los archivos de un punto de recuperación
+coherente en un entorno de prueba. Antes de reabrir el sistema, comprobaría
+que se puedan consultar los expedientes, las asistencias y los informes.
 
 La distribución regional oculta al usuario la ubicación del servicio, pero
 un cambio simultáneo puede propagar el mismo fallo a varias regiones.
