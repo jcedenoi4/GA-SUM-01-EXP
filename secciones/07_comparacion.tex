@@ -1,0 +1,38 @@
+% Borrador para revisión de Elian Mendoza.
+% Codex asistió en la síntesis de las fuentes y la redacción del borrador.
+\section{Comparación y postura crítica}
+
+\begin{frame}{Spotify y SoundCloud distribuyen audio a escala}
+  \small
+  \renewcommand{\arraystretch}{1.17}
+  \begin{tabular}{@{}p{0.16\linewidth}p{0.39\linewidth}p{0.39\linewidth}@{}}
+    \toprule
+    \textbf{Criterio} & \textbf{Spotify} & \textbf{SoundCloud} \\
+    \midrule
+    Arquitectura &
+      Servicios gestionados de Google Cloud \cite{googleSpotify}. &
+      Migró su API pública de un monolito a microservicios \cite{obrien2022strangler}. \\
+    Consistencia &
+      Cassandra con consistencia ajustable para datos de personalización
+      \cite{mishra2015personalization}. &
+      Roshi usaba un CRDT para que las réplicas convergieran al recibir los
+      mismos eventos \cite{bourgon2014roshi,almeida2024crdt}. \\
+    Disponibilidad &
+      Réplicas de personalización en Europa y Norteamérica
+      \cite{mishra2015personalization}. &
+      Pythian documenta una migración de Cassandra a varios centros de
+      datos \cite{pythianSoundcloud}. \\
+    Latencia &
+      Prueba de Cassandra con seis nodos: p95 inferior a 5\,ms con ONE
+      \cite{cody2015cassandra}. &
+      Pythian reporta que el p99 de lectura bajó de 250 a 40\,ms
+      \cite{pythianSoundcloud}. \\
+    \bottomrule
+  \end{tabular}
+
+  \medskip
+  \textbf{Postura.} Conviene ajustar la consistencia cuando el dato se
+  puede reconstruir, como en personalización. Un CRDT resulta útil cuando
+  el flujo admite combinar cambios concurrentes y converger después.
+  Los casos de latencia miden cargas y percentiles distintos.
+\end{frame}

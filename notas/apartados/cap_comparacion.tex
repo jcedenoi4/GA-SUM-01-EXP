@@ -4,7 +4,7 @@
 % Se incluye en notas/notas.tex con \input{notas/apartados/cap_comparacion}
 % Claves del .bib: ahmed2023consistency, lee2023consistency,
 %                  gilbert2012perspectives, lima2023causal
-% Versión inicial: falta el sistema analizado, la comparación y el aporte al PFC.
+% Contiene el borrador aplicado a Spotify y SoundCloud para revisión de Elian.
 % =====================================================================
 
 \subsection*{Notas técnicas: CAP y PACELC}
@@ -63,8 +63,21 @@ consistencia para que el pedido refleje lo que eligió el cliente
 superior en todos los casos: cada uno equilibra estas propiedades según su
 propósito.
 
-% Pendiente para próximos commits:
-%  - Sistema analizado: qué prioriza con y sin partición, clasificación
-%    PACELC y ejemplo técnico de su documentación oficial.
-%  - Comparación con un segundo sistema real (tabla del apartado 7).
-%  - Aporte al PFC para el apartado 8.
+% Codex asistió en el borrador de los dos párrafos aplicados siguientes.
+\subsection*{Casos de Spotify y SoundCloud}
+\textbf{Spotify.} Padlock documentó lecturas con \texttt{LOCAL\_ONE}
+y un segundo intento con \texttt{LOCAL\_QUORUM} si faltaba la clave.
+Ante una partición entre regiones, un acierto puede resolverse localmente
+si hay una réplica accesible. En operación normal, esa ruta reduce la espera
+y admite breves retrasos en algunas actualizaciones. PA/EL resume la
+tendencia de esa ruta. Las altas nuevas requieren visibilidad inmediata
+en el diseño documentado de Padlock
+\cite{leenders2018padlock}.
+
+\textbf{Comparación.} SoundCloud migró su API pública de un monolito a
+microservicios \cite{obrien2022strangler}. En el flujo social, el caso
+histórico Roshi aceptaba actualizaciones concurrentes y convergía al
+sincronizarlas. El proyecto está archivado
+\cite{bourgon2014roshi,soundcloudRoshi}. La consistencia ajustable es útil
+para datos reconstruibles, como la personalización de Spotify
+\cite{mishra2015personalization}. Las cifras de latencia de la diapositiva corresponden a cargas y percentiles distintos.
