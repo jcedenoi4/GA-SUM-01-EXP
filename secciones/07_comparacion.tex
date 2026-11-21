@@ -1,73 +1,92 @@
 % =====================================================================
-% Apartado 7: Comparación y postura crítica (1 min) -- Responsable: Elian Mendoza
-% Codex asistió en las precisiones para revisión de Elian.
+% Notas técnicas: Apartado 4 (CAP y PACELC) y Apartado 7 (Comparación)
+% Responsable y expositor: Mendoza Villarroel Elian Jossue
+% Codex asistió en las precisiones de alcance, réplicas y mediciones.
+% Se incluye en notas/notas.tex con \input{notas/apartados/cap_comparacion}
+% Claves del .bib: ahmed2023consistency, lee2023consistency,
+%   gilbert2012perspectives, lima2023causal, almeida2024crdt,
+%   leenders2018padlock, mishra2015personalization, cody2015cassandra,
+%   obrien2022strangler, pythianSoundcloud, bourgon2014roshi, soundcloudRoshi
 % =====================================================================
-\section{Comparación y postura crítica}
 
-% ---------------------------------------------------------------------
-\begin{frame}{Comparación con SoundCloud}
-  \scriptsize
-  \renewcommand{\arraystretch}{1.25}
-  \begin{tabular}{p{0.15\textwidth} p{0.38\textwidth} p{0.38\textwidth}}
-    \toprule
-    \textbf{Criterio} & \textbf{Spotify} & \textbf{SoundCloud} \\
-    \midrule
-    Arquitectura &
-      Unos 1.200 servicios y flujos de datos migrados a Google Cloud
-      \cite{googleSpotify} &
-      Microservicios con capa BFF; sustituyó un monolito en Ruby on
-      Rails \cite{obrien2022strangler} \\
-    Almacenamiento &
-      Cassandra \cite{mishra2015personalization} &
-      Cassandra \cite{pythianSoundcloud}; Roshi, caso histórico sobre
-      Redis \cite{bourgon2014roshi} \\
-    Consistencia &
-      Configurable: ONE, QUORUM, LOCAL\_ONE
-      \cite{cody2015cassandra,leenders2018padlock} &
-      Roshi: CRDT de tipo LWW con quórum de escritura
-      \cite{almeida2024crdt,soundcloudRoshi} \\
-    CAP &
-      Padlock: lecturas locales que favorecen la disponibilidad
-      \cite{leenders2018padlock} &
-      Roshi: tolerante a particiones, altamente disponible y
-      eventualmente consistente \cite{soundcloudRoshi} \\
-    Disponibilidad &
-      Padlock: tres regiones con tres zonas; objetivo de 99,95~\%
-      \cite{leenders2018padlock} &
-      Cassandra en varios centros de datos \cite{pythianSoundcloud} \\
-    Limitación &
-      Con tres nodos no alcanzó el objetivo de latencia
-      \cite{cody2015cassandra} &
-      Roshi no garantiza durabilidad completa \cite{soundcloudRoshi} \\
-    \bottomrule
-  \end{tabular}
+\subsection*{CAP y PACELC}
 
-  \medskip
-  {\tiny Las cifras de latencia de cada sistema proceden de cargas y
-  percentiles distintos, por lo que no se comparan directamente.}
-\end{frame}
+\paragraph{Teorema CAP.}
+El teorema CAP establece un compromiso fundamental entre tres propiedades de
+los sistemas distribuidos replicados: consistencia, disponibilidad y
+tolerancia a particiones \cite[p.~172]{ahmed2023consistency}. Cuando ocurre
+una interrupción en la comunicación entre sus nodos, no es posible garantizar
+simultáneamente la consistencia y la disponibilidad. Por esta razón, si el
+sistema debe seguir funcionando a pesar de una partición de red, tendrá que
+priorizar una de estas dos propiedades \cite[p.~2]{lee2023consistency}.
 
-% ---------------------------------------------------------------------
-\begin{frame}{Postura crítica}
-  \small
-  Los casos documentados responden a necesidades distintas.
+\paragraph{Consistencia (C).}
+En el sentido de CAP, la consistencia fuerte exige que las operaciones se
+observen como si ocurrieran en una sola copia y en un orden compatible con
+el tiempo real \cite[Sec.~2]{gilbert2012perspectives}. Se trata de una
+propiedad de seguridad: las respuestas deben respetar esa garantía
+\cite[Sec.~1]{gilbert2012perspectives}.
 
-  \bigskip
-  \renewcommand{\arraystretch}{1.4}
-  \begin{tabular}{p{0.18\textwidth} p{0.34\textwidth} p{0.34\textwidth}}
-    \toprule
-    & \textbf{Spotify} & \textbf{SoundCloud (Roshi)} \\
-    \midrule
-    Mecanismo & Ajusta cuántas réplicas deben responder & Converge
-      con un CRDT al recibir las mismas actualizaciones \\
-    Conveniente\newline cuando & Distintos datos requieren distintos
-      niveles de consistencia & La prioridad es no bloquear las
-      operaciones \\
-    Riesgo & Mayor latencia al exigir más réplicas & Perder réplicas
-      antes de repararlas puede perder datos \\
-    \bottomrule
-  \end{tabular}
+\paragraph{Teorema PACELC.}
+PACELC plantea dos decisiones en sistemas replicados. Si hay una partición,
+el compromiso es entre disponibilidad y consistencia. Si no hay una
+partición, el compromiso es entre latencia y consistencia
+\cite{ahmed2023consistency}. Un caso del segundo compromiso es el acceso
+causal en almacenamiento georreplicado, donde esperar a que se sincronicen
+las réplicas puede retrasar el acceso \cite{lima2023causal}.
 
-  \bigskip
-  La elección depende de qué retraso y pérdida de datos tolera cada flujo.
-\end{frame}
+\paragraph{Spotify con partición.}
+En Padlock, el servicio que gestiona las claves de cifrado de los usuarios,
+Spotify eligió Cassandra por su replicación global y su alta
+disponibilidad, y lo desplegó en tres regiones con tres zonas cada una.
+Todas las lecturas usan el nivel LOCAL\_ONE y solo reintentan con
+LOCAL\_QUORUM si no encuentran la clave; además, el equipo prueba caídas de
+centros de datos y divisiones de red \cite{leenders2018padlock}. Ante una
+partición entre regiones, esa ruta favorece la disponibilidad si queda
+una réplica local accesible que ya tiene la clave.
+
+\paragraph{Spotify sin partición.}
+Spotify guardó los datos de personalización en Cassandra. Como esos datos
+no necesitaban transacciones estrictas y podían reconstruirse a partir de lo
+que escuchan los usuarios, aceptó menos consistencia inmediata a cambio de
+responder más rápido \cite{mishra2015personalization}. Padlock sigue el
+mismo criterio: tolera unos segundos de retraso en algunas actualizaciones;
+las altas nuevas requieren visibilidad inmediata \cite{leenders2018padlock}.
+PA/EL describe la tendencia de esa ruta de lectura de Padlock.
+
+\paragraph{Ejemplo técnico.}
+En una prueba con un límite de 5~ms en el percentil 95, un clúster de seis
+nodos cumplió el objetivo con el nivel ONE, cerca de 90\,000 operaciones por
+segundo, y también con QUORUM; con tres nodos no lo cumplió ni con ONE
+\cite{cody2015cassandra}. En ese escenario, sumar nodos permitió usar
+QUORUM dentro del objetivo de latencia. El ensayo midió rendimiento.
+
+\subsection*{Comparación y postura crítica}
+
+\paragraph{Comparación con SoundCloud.}
+SoundCloud resuelve el mismo problema con microservicios y una capa BFF
+\cite{obrien2022strangler}. Usa Cassandra en varios centros de datos, donde
+bajó la latencia de lectura del percentil 99 de 250~ms a 40~ms
+\cite{pythianSoundcloud}. Esa cifra y la prueba de Spotify corresponden
+a cargas y percentiles distintos. SoundCloud también desarrolló Roshi,
+un caso histórico sobre Redis cuyo repositorio está archivado. Su CRDT
+resuelve conflictos con la última escritura y converge al recibir las mismas
+actualizaciones. Las escrituras esperan un quórum
+\cite{soundcloudRoshi,almeida2024crdt}.
+
+\paragraph{Postura crítica.}
+Priorizar consistencia o disponibilidad depende de lo que necesite cada
+aplicación. En los casos comparados, Spotify
+ajusta cuántas réplicas deben responder. Roshi admite cambios concurrentes,
+converge al sincronizarlos y puede perder datos si fallan suficientes
+réplicas antes de la reparación \cite{soundcloudRoshi}. En consecuencia, ningún sistema
+es superior en todos los casos: cada uno equilibra estas propiedades según
+su propósito.
+
+\paragraph{Uso de IA.}
+Usé Claude, de Anthropic, y ChatGPT, de OpenAI, como apoyo para buscar
+fuentes y comprobar sus datos bibliográficos, ubicar en los artículos los
+fragmentos sobre CAP y PACELC, organizar la tabla comparativa entre Spotify
+y SoundCloud, y redactar borradores de mis diapositivas y notas en LaTeX.
+Yo leí las fuentes, verifiqué en los artículos originales las cifras que
+cito y decidí qué afirmaciones incluir.
