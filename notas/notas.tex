@@ -23,17 +23,30 @@
 \input{notas/apartados/presentacion_arquitectura}
 
 \subsection*{Apartados 3 y 5. Transparencias y comunicación (Jilmar Cedeño, 3 min)}
-\textit{Síntesis de las diapositivas para revisión del expositor.}
-La app de Spotify ofrece ajustes de calidad. La reproducción sin pérdida
-requiere Premium y disponibilidad en el mercado. El perímetro dirige el
-tráfico sin que el usuario elija una región. Con Offline Backup, los
-usuarios Premium pueden reproducir algunas pistas de la caché sin conexión \cite{spotifyLossless2025,spotifyIncident2025,spotifyOffline2024}.
-En la búsqueda pública, una solicitud HTTPS recibe los resultados en JSON.
-Los eventos de uso siguen otro flujo. Pub/Sub separa su publicación de su
-procesamiento posterior \cite{spotifyWebApiSearch,khlebnikova2024dataplatform}.
+\textbf{Acceso y ubicación.} Desde la app podemos reproducir música y
+ajustar la calidad del audio. Cuando la aplicación se conecta, el perímetro
+de Spotify distribuye el tráfico entre sus regiones de nube. El oyente usa
+el servicio sin elegir una región \cite{spotifyLossless2025,spotifyIncident2025}.
+
+\textbf{Replicación y fallos.} \emph{Offline Backup} permite escuchar algunas
+pistas que ya están en la caché del dispositivo cuando se pierde la conexión.
+Ese ejemplo documenta el uso de caché local. Las fuentes consultadas dejan
+sin confirmar la replicación entre servidores. En la caída del 16 de abril
+de 2025 se interrumpió gran parte del tráfico, lo que muestra el límite de
+la transparencia a fallos \cite{spotifyOffline2024,spotifyIncident2025}.
+
+\textbf{Comunicación cliente-servidor.} El cliente envía una solicitud y el
+servidor responde. Por ejemplo, una aplicación autorizada puede consultar
+el catálogo mediante \texttt{GET /v1/search} sobre HTTPS y recibir los
+resultados en JSON \cite{spotifyWebApiSearch}.
+
+\textbf{Flujo de solicitudes y eventos.} En la parte superior del diagrama,
+la consulta termina cuando la API devuelve el resultado. En la parte
+inferior, el servicio publica los eventos de uso en Pub/Sub. Los suscriptores
+pueden procesarlos después, de forma independiente de la publicación
+\cite{spotifyWebApiSearch,khlebnikova2024dataplatform}.
 
 \subsection*{Apartados 4 y 7. CAP, PACELC y comparación (Elian Mendoza, 3 min)}
-\textit{Análisis aplicado y comparación en borrador para revisión del expositor.}
 \begingroup
 \let\subsection\subsubsection
 \input{notas/apartados/cap_comparacion}
@@ -57,9 +70,10 @@ procesamiento posterior \cite{spotifyWebApiSearch,khlebnikova2024dataplatform}.
 \setlength{\bibitemsep}{0pt}
 \printbibliography[title={Referencias citadas}]
 
-\clearpage
+\begin{samepage}
 \section*{Anexo. Bosquejo de arquitectura}
 \begin{center}
-  \includegraphics[width=\linewidth,height=0.76\textheight,keepaspectratio]{evidencias/boceto_equipo.jpg}
+  \includegraphics[width=\linewidth,height=0.54\textheight,keepaspectratio]{evidencias/boceto_equipo.jpg}
 \end{center}
+\end{samepage}
 \end{document}
