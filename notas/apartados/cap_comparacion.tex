@@ -27,14 +27,6 @@ el tiempo real \cite[Sec.~2]{gilbert2012perspectives}. Se trata de una
 propiedad de seguridad: las respuestas deben respetar esa garantía
 \cite[Sec.~1]{gilbert2012perspectives}.
 
-\paragraph{Disponibilidad (A) y tolerancia a particiones (P).}
-La disponibilidad es la capacidad de responder a las solicitudes de los
-usuarios que leen o modifican el estado compartido
-\cite[p.~2]{lee2023consistency}. La tolerancia a particiones parte de que la
-comunicación entre servidores no es fiable: los mensajes pueden retrasarse o
-perderse y los servidores pueden quedar divididos en grupos que no se
-comunican \cite[Sec.~2]{gilbert2012perspectives}.
-
 \paragraph{Teorema PACELC.}
 PACELC plantea dos decisiones en sistemas replicados. Si hay una partición,
 el compromiso es entre disponibilidad y consistencia. Si no hay una
@@ -84,13 +76,17 @@ actualizaciones. Las escrituras esperan un quórum
 
 \paragraph{Postura crítica.}
 Priorizar consistencia o disponibilidad depende de lo que necesite cada
-aplicación. En un cruce controlado por vehículos autónomos conviene la
-consistencia, porque todos deben compartir la misma información antes de
-avanzar; en cambio, en el sistema de frenado conviene la disponibilidad,
-porque la reacción tiene que ser inmediata
-\cite[pp.~2--3]{lee2023consistency}. En los casos comparados, Spotify
+aplicación. En los casos comparados, Spotify
 ajusta cuántas réplicas deben responder. Roshi admite cambios concurrentes,
 converge al sincronizarlos y puede perder datos si fallan suficientes
 réplicas antes de la reparación \cite{soundcloudRoshi}. En consecuencia, ningún sistema
 es superior en todos los casos: cada uno equilibra estas propiedades según
 su propósito.
+
+\paragraph{Uso de IA.}
+Usé Claude, de Anthropic, y ChatGPT, de OpenAI, como apoyo para buscar
+fuentes y comprobar sus datos bibliográficos, ubicar en los artículos los
+fragmentos sobre CAP y PACELC, organizar la tabla comparativa entre Spotify
+y SoundCloud, y redactar borradores de mis diapositivas y notas en LaTeX.
+Yo leí las fuentes, verifiqué en los artículos originales las cifras que
+cito y decidí qué afirmaciones incluir.
