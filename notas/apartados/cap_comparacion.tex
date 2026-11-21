@@ -1,13 +1,14 @@
 % =====================================================================
-% Notas técnicas: Apartado 4 (CAP y PACELC) y Apartado 7 (Postura crítica)
+% Notas técnicas: Apartado 4 (CAP y PACELC) y Apartado 7 (Comparación)
 % Responsable y expositor: Mendoza Villarroel Elian Jossue
 % Se incluye en notas/notas.tex con \input{notas/apartados/cap_comparacion}
 % Claves del .bib: ahmed2023consistency, lee2023consistency,
-%                  gilbert2012perspectives, lima2023causal
-% Versión inicial: falta el sistema analizado, la comparación y el aporte al PFC.
+%   gilbert2012perspectives, lima2023causal, almeida2024crdt,
+%   leenders2018padlock, mishra2015personalization, cody2015cassandra,
+%   obrien2022strangler, pythianSoundcloud, bourgon2014roshi, soundcloudRoshi
 % =====================================================================
 
-\subsection*{Notas técnicas: CAP y PACELC}
+\subsection*{CAP y PACELC}
 
 \paragraph{Teorema CAP.}
 El teorema CAP establece un compromiso fundamental entre tres propiedades de
@@ -33,14 +34,6 @@ comunicación entre servidores no es fiable: los mensajes pueden retrasarse o
 perderse y los servidores pueden quedar divididos en grupos que no se
 comunican \cite[Sec.~2]{gilbert2012perspectives}.
 
-\paragraph{Comportamiento durante una partición.}
-Cuando una réplica rechaza una solicitud o no responde dentro del tiempo de
-espera, la base de datos debe decidir entre devolver un resultado
-posiblemente obsoleto, sacrificando la consistencia, o informar que el
-servicio no está disponible. Los sistemas CP, como HBase o BigTable,
-renuncian a la disponibilidad; los sistemas AP, como Cassandra, Dynamo o
-Riak, relajan la consistencia \cite[p.~172]{ahmed2023consistency}.
-
 \paragraph{Teorema PACELC.}
 PACELC plantea dos decisiones en sistemas replicados. Si hay una partición,
 el compromiso es entre disponibilidad y consistencia. Si no hay una
@@ -49,22 +42,54 @@ partición, el compromiso es entre latencia y consistencia
 causal en almacenamiento georreplicado, donde esperar a que se sincronicen
 las réplicas puede retrasar el acceso \cite{lima2023causal}.
 
-\subsection*{Postura crítica}
+\paragraph{Spotify con partición.}
+En Padlock, el servicio que gestiona las claves de cifrado de los usuarios,
+Spotify eligió Cassandra por su replicación global y su alta
+disponibilidad, y lo desplegó en tres regiones con tres zonas cada una.
+Todas las lecturas usan el nivel LOCAL\_ONE y solo reintentan con
+LOCAL\_QUORUM si no encuentran la clave; además, el equipo prueba caídas de
+centros de datos y divisiones de red \cite{leenders2018padlock}. Como cada
+región lee de una réplica local, puede seguir respondiendo aunque pierda la
+comunicación con las demás: ante una partición prioriza la disponibilidad.
 
+\paragraph{Spotify sin partición.}
+Spotify guardó los datos de personalización en Cassandra. Como esos datos
+no necesitaban transacciones estrictas y podían reconstruirse a partir de lo
+que escuchan los usuarios, aceptó menos consistencia inmediata a cambio de
+responder más rápido \cite{mishra2015personalization}. Padlock sigue el
+mismo criterio: tolera unos segundos de retraso en las actualizaciones para
+minimizar la latencia \cite{leenders2018padlock}. Por eso Spotify se
+clasifica como PA/EL.
+
+\paragraph{Ejemplo técnico.}
+En una prueba con un límite de 5~ms en el percentil 95, un clúster de seis
+nodos cumplió el objetivo con el nivel ONE, cerca de 90\,000 operaciones por
+segundo, y también con QUORUM; con tres nodos no lo cumplió ni con ONE
+\cite{cody2015cassandra}. En ese escenario, sumar nodos permitió pedir más
+consistencia sin incumplir el límite de latencia.
+
+\subsection*{Comparación y postura crítica}
+
+\paragraph{Comparación con SoundCloud.}
+SoundCloud resuelve el mismo problema con microservicios y una capa BFF
+\cite{obrien2022strangler}. Usa Cassandra en varios centros de datos, donde
+bajó la latencia de lectura del percentil 99 de 250~ms a 40~ms
+\cite{pythianSoundcloud}, y desarrolló Roshi, un sistema propio sobre Redis
+que se declara tolerante a particiones, altamente disponible y
+eventualmente consistente, y que converge sin consenso mediante un CRDT del
+tipo «gana la última escritura» \cite{soundcloudRoshi},
+\cite[p.~51:29]{almeida2024crdt}.
+
+\paragraph{Postura crítica.}
 Priorizar consistencia o disponibilidad depende de lo que necesite cada
 aplicación. En un cruce controlado por vehículos autónomos conviene la
 consistencia, porque todos deben compartir la misma información antes de
 avanzar; en cambio, en el sistema de frenado conviene la disponibilidad,
 porque la reacción tiene que ser inmediata
-\cite[pp.~2--3]{lee2023consistency}. En una tienda en línea, una consulta
-puede devolver datos desactualizados, mientras que la compra requiere
-consistencia para que el pedido refleje lo que eligió el cliente
-\cite[Sec.~4.4]{gilbert2012perspectives}. En consecuencia, ningún sistema es
-superior en todos los casos: cada uno equilibra estas propiedades según su
-propósito.
-
-% Pendiente para próximos commits:
-%  - Sistema analizado: qué prioriza con y sin partición, clasificación
-%    PACELC y ejemplo técnico de su documentación oficial.
-%  - Comparación con un segundo sistema real (tabla del apartado 7).
-%  - Aporte al PFC para el apartado 8.
+\cite[pp.~2--3]{lee2023consistency}. Spotify y SoundCloud priorizan la
+disponibilidad y la baja latencia, pero con mecanismos distintos: Spotify
+exige más réplicas cuando necesita más consistencia, a costa de mayor
+latencia, mientras que Roshi evita el consenso y acepta no garantizar una
+durabilidad perfecta \cite{soundcloudRoshi}. En consecuencia, ningún sistema
+es superior en todos los casos: cada uno equilibra estas propiedades según
+su propósito.
