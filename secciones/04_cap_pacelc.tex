@@ -1,19 +1,13 @@
 % =====================================================================
 % Apartado 4: CAP y PACELC (2 min) -- Responsable: Elian Mendoza
-% Solo usa paquetes que ya carga presentacion.tex (booktabs, biblatex).
 % Codex asistió en las precisiones sobre CAP/PACELC para revisión de Elian.
 % =====================================================================
 \section{CAP y PACELC}
 
 % ---------------------------------------------------------------------
 \begin{frame}{Teorema CAP}
-  Un sistema distribuido replicado no puede garantizar simultáneamente
-  las tres propiedades siguientes.
-
-  \bigskip
-  \centering
   \small
-  \renewcommand{\arraystretch}{1.4}
+  \renewcommand{\arraystretch}{1.3}
   \begin{tabular}{p{0.26\textwidth} p{0.62\textwidth}}
     \toprule
     \textbf{Propiedad} & \textbf{Definición} \\
@@ -25,37 +19,22 @@
     \bottomrule
   \end{tabular}
 
-  \vfill
-  \raggedright
-  \footnotesize Fuentes: \cite[p.~172]{ahmed2023consistency},
-  \cite[p.~2]{lee2023consistency}.
-\end{frame}
-
-% ---------------------------------------------------------------------
-\begin{frame}{Comportamiento ante una partición}
-  Si se interrumpe la comunicación entre grupos de réplicas, el diseño
-  determina la respuesta del sistema.
-
   \bigskip
-  \centering
-  \small
-  \renewcommand{\arraystretch}{1.4}
-  \begin{tabular}{p{0.20\textwidth} p{0.33\textwidth} p{0.33\textwidth}}
+  Si se interrumpe la comunicación entre grupos de réplicas:
+
+  \medskip
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{p{0.26\textwidth} p{0.62\textwidth}}
     \toprule
-    & \textbf{Sistema CP} & \textbf{Sistema AP} \\
-    \midrule
-    Ante la partición & Rechaza la solicitud & Responde con el dato
-      disponible \\
-    Garantiza & Consistencia & Disponibilidad \\
-    Sacrifica & Disponibilidad & Consistencia (el dato puede estar
-      desactualizado) \\
+    \textbf{Sistema CP} & Rechaza la solicitud: conserva la consistencia \\
+    \textbf{Sistema AP} & Responde con el dato disponible, que puede estar
+      desactualizado \\
     \bottomrule
   \end{tabular}
 
   \vfill
-  \raggedright
   \footnotesize Fuentes: \cite[p.~172]{ahmed2023consistency},
-  \cite[p.~51:4]{almeida2024crdt}.
+  \cite[p.~2]{lee2023consistency}, \cite[p.~51:4]{almeida2024crdt}.
 \end{frame}
 
 % ---------------------------------------------------------------------
@@ -86,9 +65,9 @@
 \end{frame}
 
 % ---------------------------------------------------------------------
-\begin{frame}{Spotify ante una partición: el caso de Padlock}
-  Padlock es el servicio central de Spotify que gestiona las claves de
-  cifrado de los datos personales de sus usuarios.
+\begin{frame}{Spotify con partición: el caso de Padlock}
+  Padlock gestiona las claves de cifrado de los datos personales de los
+  usuarios de Spotify.
 
   \bigskip
   \small
@@ -109,9 +88,9 @@
 
   \bigskip
   \raggedright
-  Si queda una réplica local accesible y la clave está presente,
-  la lectura puede resolverse sin coordinar regiones. Esa ruta
-  favorece la disponibilidad.
+  Si queda una réplica local accesible y la clave está presente, la
+  lectura se resuelve sin coordinar regiones: esa ruta favorece la
+  disponibilidad.
 
   \vfill
   \footnotesize Fuente: \cite{leenders2018padlock} (documentación técnica
@@ -119,52 +98,37 @@
 \end{frame}
 
 % ---------------------------------------------------------------------
-\begin{frame}{Spotify: decisión documentada sin partición}
+\begin{frame}{Spotify sin partición: latencia y evidencia}
   \small
-  \renewcommand{\arraystretch}{1.4}
-  \begin{tabular}{p{0.30\textwidth} p{0.58\textwidth}}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{p{0.24\textwidth} p{0.64\textwidth}}
     \toprule
-    \textbf{Aspecto} & \textbf{Documentación de Spotify} \\
-    \midrule
-    Datos analizados & Personalización, almacenada en Apache Cassandra \\
-    Requisito & No requieren transacciones estrictas; pueden
-      reconstruirse desde el flujo de escucha \\
-    Decisión & Menor consistencia inmediata entre réplicas a cambio de
-      menor latencia \\
-    Matiz de Padlock & Acepta segundos de retraso en algunas
-      actualizaciones y exige visibilidad inmediata en altas nuevas \\
-    Lectura local & Tendencia PA/EL en la ruta de lectura de Padlock \\
+    Personalización & Sin transacciones estrictas: menor consistencia
+      inmediata a cambio de menor latencia \\
+    Padlock & Acepta segundos de retraso en algunas actualizaciones;
+      exige visibilidad inmediata en altas nuevas \\
+    Tendencia & PA/EL en la ruta de lectura de Padlock \\
     \bottomrule
   \end{tabular}
 
-  \vfill
-  \footnotesize Fuentes: \cite{mishra2015personalization},
-  \cite{leenders2018padlock} (documentación técnica de Spotify).
-\end{frame}
-
-% ---------------------------------------------------------------------
-\begin{frame}{Evidencia técnica: niveles ONE y QUORUM}
-  Prueba de carga de Spotify sobre Cassandra con un objetivo de latencia
-  inferior a 5~ms en el percentil 95.
-
   \bigskip
+  Prueba de carga con objetivo menor a 5~ms en el percentil 95:
+
+  \medskip
   \centering
-  \small
-  \renewcommand{\arraystretch}{1.4}
+  \renewcommand{\arraystretch}{1.3}
   \begin{tabular}{lll}
     \toprule
     \textbf{Clúster} & \textbf{Nivel ONE} & \textbf{Nivel QUORUM} \\
     \midrule
     3 nodos & Fuera del objetivo & --- \\
-    6 nodos & Cumple (cerca de 90\,000 operaciones/s) & Cumple \\
+    6 nodos & Cumple (cerca de 90\,000 op/s) & Cumple \\
     \bottomrule
   \end{tabular}
 
-  \bigskip
-  \raggedright
-  Con seis nodos, QUORUM también cumplió el objetivo de latencia
-  en esta prueba de carga. El ensayo evaluó rendimiento.
-
   \vfill
-  \footnotesize Fuente: \cite{cody2015cassandra}.
+  \raggedright
+  \footnotesize Fuentes: \cite{mishra2015personalization},
+  \cite{leenders2018padlock}, \cite{cody2015cassandra}. El ensayo evaluó
+  rendimiento.
 \end{frame}
