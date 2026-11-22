@@ -6,7 +6,7 @@ Docente: Gleiston Guerrero Ulloa, PhD.
 
 **Sistema analizado:** Spotify.
 
-**Video del ensayo (máximo 12 minutos):** _pendiente, se agrega el sábado 21 de noviembre de 2026._
+**Video del ensayo (máximo 12 minutos):** https://youtu.be/yxKQQ6LOazk (cada integrante grabó su parte por separado y luego se unieron en un solo video).
 
 ## Equipo y apartados
 
@@ -46,7 +46,7 @@ Si falta el archivo de alguna sección, la compilación sigue y deja el aviso `F
 
 ## Cómo compilar las notas
 
-Cuando exista `notas/notas.tex`, se compila también desde la carpeta raíz, porque las rutas de los apartados, de la bibliografía y de la foto del boceto parten de ahí:
+`notas/notas.tex` se compila también desde la carpeta raíz, porque las rutas de los apartados, de la bibliografía y de la foto del boceto parten de ahí:
 
 ```
 pdflatex notas/notas.tex
